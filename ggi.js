@@ -45,13 +45,7 @@ function createCounty (parameters) {
     let iterations = [];
     iterations.push(freshState(graph, parameters.glen, parameters.flocks, parameters.sheep));
 
-    for (i=0; i < iterations[0].length; i++) {
-//        console.log(i);
-//        console.log(iterations[0][i]);
-//        console.log(iterations[0][i].sheep);
-    }
-
-    return {output: {graph: graph, topology: topology, iterations: iterations}}
+    return {graph: graph, topology: topology, iterations: iterations}
 }
 
 
@@ -68,14 +62,7 @@ function iterateCounty (county) {
     nextIteration = generateIteration(relevantIteration, graph);
     nextCounty.iterations.push(nextIteration);
 
-    for (i=0; i < relevantIteration.length; i++) {
-        console.log(i);
-        console.log(relevantIteration[i]);
-        console.log(relevantIteration[i].sheep);
-        console.log(nextIteration[i]);
-        console.log(nextIteration[i].sheep);
-    }
-    return {output: nextCounty}
+    return nextCounty
 }
 
 
@@ -339,7 +326,6 @@ function generateIteration (prevIteration) {
                 if (oldSheep != undefined) {
                     let newSheep = iterateSheep(i, newGlen, oldSheep);
                     currentSheep.push(newSheep);
-                    newGlen.abundance -= newSheep[2];
                 }
             }
         }
@@ -360,10 +346,11 @@ function iterateSheep (glenIndex, glen, sheep) {
     
     let hunger = sheep.hunger;
     let dinner = sheep.greed;
-    if (dinner < glen.abundance) {
+    if (dinner > glen.abundance) {
         dinner = glen.abundance
     }
-    if (glen.abundance = 0) {
+    glen.abundance -= dinner;
+    if (glen.abundance === 0) {
         hunger++;
     } else {
         hunger = 0;
@@ -379,7 +366,7 @@ function iterateSheep (glenIndex, glen, sheep) {
         shepherd: sheep.shepherd
     }
 
-    return [nextGlen, aSheep, dinner]
+    return [nextGlen, aSheep]
 }
 
 
@@ -412,9 +399,9 @@ function fleeLowGrass(glenIndex, glen) {
 
 function st() {
     let myCounty = createCounty(testParameters);
-    let iteratedCounty = iterateCounty(myCounty.output);
+    let iteratedCounty = iterateCounty(myCounty);
 
     return iteratedCounty
 }
 
-st()
+newCounty = st()
