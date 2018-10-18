@@ -1,1 +1,120 @@
-<h1> F'real, tho, garzing game goes here </h1>
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+    <head>
+        <title>The Grazing Game</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link id='main-stylesheet' rel="stylesheet" type="text/css" href="https://unpkg.com/carbon-components/css/carbon-components.css">
+        <style>
+          body {
+            background-color: rgb(167, 182, 198);
+          }
+
+          circle {
+            transition: transform 1s ease, fill 1s ease;
+          }
+
+          #root {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: row;
+          }
+
+          svg {
+            flex-grow: 1;
+          }
+
+          div.controls {
+            height: 100vh;
+            padding: 0 1rem;
+            font-size: 1.2rem;
+            background-color: #f4f7fb;
+            white-space: nowrap;
+          }
+
+          div.controls > * {
+            margin: 0.5rem 0;
+            box-sizing: content-box;
+          }
+
+          input[type="text"] {
+            width: 6ch;
+            margin: 0.25rem;
+            border: none;
+            border-bottom: 1px solid gray;
+            outline: none;
+            background-color: transparent;
+            text-align: center;
+            font-size: 1rem;
+          }
+
+          input[type="text"]:focus {
+            border-bottom: 1px solid #1570ff;
+          }
+
+          div.invalid > input[type="text"] {
+            color: red;
+            border-color: red;
+          }
+
+          div.numeric-input.invalid {
+            color: red;
+          }
+
+          div.play-controls {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+          }
+
+          div.control {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          button {
+            border: none;
+            outline: none;
+            background-color: #0d47a1;
+            padding: 0;
+            color: white;
+            cursor: pointer;
+            font-family: Helvetica, Arial, sans-serif;
+          }
+
+          button.run {
+            width: 100%;
+            height: 3rem;
+            font-size: 1.25rem;
+          }
+
+          button.valid:active {
+            background-color: #1570ff;
+          }
+
+          button.invalid {
+            background-color: gray;
+            color: darkgray;
+          }
+
+          button.icon {
+            height: 1.5rem;
+            width: 1.5rem;
+            line-height: 1.5rem;
+            text-align: center;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+          }
+
+          input[type="range"] {
+            width: 100%;
+            margin: 0.5rem 0;
+          }
+        </style>
+    </head>
+    <body>
+        <div id='root'> </div>
+        <script src="index.js"></script>
+    </body>
+</html>
