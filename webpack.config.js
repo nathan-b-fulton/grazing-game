@@ -1,5 +1,9 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
+const marked = require('marked');
+const renderer = new marked.Renderer();
+
+
 
 module.exports = (env, argv) => {
   return {
@@ -13,6 +17,19 @@ module.exports = (env, argv) => {
     devtool: "source-map",
     module: {
       rules: [
+        {
+          test: /\.md$/,
+          use: [{                          
+                  loader: "html-loader"
+                  },
+                {
+                  loader: "markdown-loader",
+                    options: {
+                      gfm: true,
+                      renderer
+                      }
+                  }]
+          },
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,

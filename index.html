@@ -1,5 +1,24 @@
 <!DOCTYPE html>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="github-markdown.css">
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+        background-color: darkgreen;
+        color: seashell;
+    }
+ 
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
 <html>
     <head>
         <title>The Grazing Game</title>
@@ -7,11 +26,33 @@
         <link id='main-stylesheet' rel="stylesheet" type="text/css" href="https://unpkg.com/carbon-components/css/carbon-components.css">
         <style>
           body {
-            background-color: rgb(167, 182, 198);
+            background-color: darkgreen;
           }
 
           circle {
             transition: transform 1s ease, fill 1s ease;
+          }
+
+          ol {
+            list-style-type: decimal;
+          }
+
+          ul {
+            list-style-type: circle;
+          }
+
+
+          #viz-message {
+            max-height: 0px;
+            width: 300px;
+            clear: both;
+            white-space: pre-wrap;
+            overflow: hidden;
+            transition: max-height 1s ease-in-out;
+          }
+
+          #wrapper {
+            flex-direction: column;
           }
 
           #root {
@@ -26,7 +67,7 @@
           }
 
           div.controls {
-            height: 100vh;
+          
             padding: 0 1rem;
             font-size: 1.2rem;
             background-color: #f4f7fb;
@@ -63,14 +104,20 @@
           }
 
           div.play-controls {
+            max-height: 0px;
             display: flex;
             flex-direction: row;
             align-items: center;
+            overflow: hidden;
+            transition: max-height 1s ease-in-out;
           }
 
           div.control {
+            max-height: 25px;
             display: flex;
             justify-content: space-between;
+            overflow: hidden;
+            transition: max-height 1s ease-in-out;
           }
 
           button {
@@ -105,6 +152,14 @@
             text-align: center;
             margin-right: 0.5rem;
             flex-shrink: 0;
+          }
+
+          button.shown {
+            background-color: darkgreen;
+          }
+
+          button.hidden {
+            background-color: #0d47a1;
           }
 
           input[type="range"] {

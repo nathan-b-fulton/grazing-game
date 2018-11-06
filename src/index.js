@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-zine';
 import {issue} from 'zine';
 import {runSimulation} from './simulation';
+import html from '../README.md';
 
 // State Containers & Constants
 
@@ -29,13 +30,11 @@ const paramData = {
   sheepReproductionRate: {label:  "Sheep Reproduction Rate", min: 0, max: 1, isFloat: true}
 };
 
-const paramState = {valid: true};
+const paramState = {valid: true, show: true};
 
 const simulationState = runSimulation(formatParameters());
 
-
 // Helper Functions
-
 
 function validate (id) {
   if (id === "strategy") return true;
@@ -56,14 +55,35 @@ function updateParameter (id, value) {
       break;
     }
   }
-
+  let playCtrls = document.getElementsByClassName('play-controls');
+  playCtrls[0].style.maxHeight = "0px";
   issue(paramState, {valid});
 }
 
 function updateSimulation () {
   if (paramState.valid) {
     issue(simulationState, runSimulation(formatParameters()));
+    let ctrls = document.getElementsByClassName('control');
+    let i;
+    for (i = 0; i < ctrls.length; i++) {
+      ctrls[i].style.maxHeight = "0px";
+    }
+    let playCtrls = document.getElementsByClassName('play-controls');
+    playCtrls[0].style.maxHeight = "25px";
+    let message = document.getElementById('viz-message');
+    message.style.maxHeight = "100px";
+    issue(docState, {showDocs: false});
+    issue(paramState, {show: false})
   }
+}
+
+function revealParams () {
+  let ctrls = document.getElementsByClassName('control');
+  let i;
+  for (i = 0; i < ctrls.length; i++) {
+    ctrls[i].style.maxHeight = "25px";
+  }
+  issue(paramState, {show: true})
 }
 
 function formatParameters () {
@@ -84,7 +104,7 @@ function cn (base, isValid) {
   return `${base} ${isValid ? "valid" : "invalid"}`;
 }
 
-// React Components
+// React Components for controls
 
 const Numeric = ({id}) => (
   <div className={cn("control numeric-input", validate(id))}>
@@ -92,6 +112,14 @@ const Numeric = ({id}) => (
     <label htmlFor={id}>{paramData[id].label}</label>
   </div>
 );
+
+const runButton = () => ( <button className={cn("run", paramState.valid)} onClick={updateSimulation}>Run Simulation</button> );
+
+const paramButton = () => ( <button className={cn("run", paramState.valid)} onClick={revealParams}>Show Parameters</button> );
+
+const GetButton = connect(paramState, ({show}) => {
+  return show ? runButton() : paramButton()
+});
 
 const ParamControls = connect(paramState, () => (
   <>
@@ -111,23 +139,50 @@ const ParamControls = connect(paramState, () => (
       </select>
       <label htmlFor="strategy">Strategy</label>
     </div>
-    <button className={cn("run", paramState.valid)} onClick={updateSimulation}>Run Simulation</button>
+    <GetButton />
   </>
 ));
 
 const TurnSlider = connect(simulationState, ({turn, parameters: {numTurns}}) => (
-  <div className="play-controls">
-    <button className={cn("icon", turn !== 0)} onClick={() => setTurn(Math.max(0, turn - 1))}>|◀</button>
-    <button className={cn("icon", turn !== numTurns)} onClick={() => setTurn(Math.min(numTurns, turn + 1))}>▶|</button>
-    <input
-      type="range"
-      value={turn}
-      min="0"
-      max={numTurns}
-      step="1"
-      onChange={(event) => setTurn(event.target.valueAsNumber)} />
+  <div id="wrapper">
+    <div className="play-controls">
+      <button className={cn("icon", turn !== 0)} onClick={() => setTurn(Math.max(0, turn - 1))}>|◀</button>
+      <button className={cn("icon", turn !== numTurns)} onClick={() => setTurn(Math.min(numTurns, turn + 1))}>▶|</button>
+      <input 
+        type="range"
+        value={turn}
+        min="0"
+        max={numTurns}
+        step="1"
+        onChange={(event) => setTurn(event.target.valueAsNumber)} />
+    </div>
+    <div id="viz-message"><br></br> 
+    You have now run a full simulation. Click the arrow keys to adjust the view by season, or drag the slider.
+    </div>
   </div>
 ));
+
+// Display MarkDown documentation or graph visualization
+
+function createMarkup() {
+  return {__html: html};
+ }
+
+const docState = {showDocs:true};
+
+const Doc = () => ( <div className="markdown-body" dangerouslySetInnerHTML={createMarkup()} /> );
+
+function toggleDocs () {
+  if (docState.showDocs) {
+    issue(docState, {showDocs: false})
+   } else {
+     issue(docState, {showDocs: true})
+   }
+}
+
+const DocToggle = connect(docState, ({showDocs}) => 
+( <button className={`icon ${showDocs ? "shown" : "hidden"}`} onClick={toggleDocs}>?</button> )
+)
 
 const GraphView = connect(simulationState, ({turn, parameters, glens, flocks}) => {
   let gridSpacing = 1000 / parameters.countySize;
@@ -162,6 +217,11 @@ const GraphView = connect(simulationState, ({turn, parameters, glens, flocks}) =
   );
 });
 
+const Viz = connect(docState, ({showDocs}) => {
+  return showDocs ? Doc() : GraphView();
+  });
+
+
 // Render to DOM
 
 ReactDOM.render((
@@ -170,7 +230,8 @@ ReactDOM.render((
       <h1>The Grazing Game</h1>
       <ParamControls />
       <TurnSlider />
+      <DocToggle />
     </div>
-    <GraphView />
+    <Viz />
   </>
 ), document.getElementById('root'));
