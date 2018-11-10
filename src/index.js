@@ -57,6 +57,8 @@ function updateParameter (id, value) {
   }
   let playCtrls = document.getElementsByClassName('play-controls');
   playCtrls[0].style.maxHeight = "0px";
+  let message = document.getElementById('viz-message');
+  message.style.maxHeight = "0px";
   issue(paramState, {valid});
 }
 

@@ -33,7 +33,13 @@ First, the graph is created. The length of one side of the graph is determined b
 
 These three steps are repeated for a number of iterations equal to _Number of Seasons_.
 
-<br>
+## How to read the display
+
+* Each glen will be brighter or darker depending on its abundance (metaphorically, how much grass it has left). Bright green indicates an abundance close to 1, the maximum, while a dark, dull brown indicates 0, devastation that precludes recovery.
+
+* Flocks move together, with eat dot representing one sheep. Sometimes more than one flock will arrive at the same glen, in which case the aggregate will look like one big flock until they move on to different glens.
+
+* Each sheep will be solid white if it was just able to eat, and somewhat translucent if it has gone for one or more turns without food. Sheep that have gone too long without eating and starved are still tracked in the data set, but do not appear on the display because they are completely transparent, and do not affect abundance because they no longer attempt to eat.
 
 ## Further Information
 
