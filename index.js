@@ -93,7 +93,363 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h1 id=\"hello-\">Hello!</h1>\n<p>Welcome to <em>The Grazing Game</em>, a simple model of how mobile populations might share a finite (but regenerating) resource distributed across a fixed topology. This documentation covers the basic rules for updating the state of the resource and each population, as well as how to adjust different parameters of the model in the user interface, and run simulations under the parameters you have chosen.</p>\n<h2 id=\"how-to-use-this-application\">How to use this application</h2>\n<p>(<em>n.b.: If you are viewing this document on the GitHub source page, you may just want to go straight to <a href=\"http://grazing.games/\">http://grazing.games/</a> to play with the actual simulation application.</em>)</p>\n<ol>\n<li>Read the full explanation of The Grazing Game below to make sure you understand the parameters.</li>\n<li>Set the parameters to the left according to what kind of scenario you are interested in modeling.</li>\n<li>Press the &quot;Run Simulation&quot; button.</li>\n<li>To view the iterations of the simulation, click the arrow keys next to the slider at the bottom. You can also drag the slider however far you would like, including all the way to the end if you just want to see how things turn out.</li>\n<li>If you want to review or change the parameters, click the &quot;Show Parameters&quot; button. You can then edit the parameters and click &quot;Run Simulation&quot; again in order to see the effect of different parameterizations.</li>\n</ol>\n<h2 id=\"basic-concept\">Basic Concept</h2>\n<p>The Grazing Game is intended to demonstrate a number of principles to students and researchers who are interested in what modeling might reveal about shared resource management, population dynamics, and environmental sustainability. The metaphor driving the model is fairly simple: flocks of sheep wander between connected glens, eating the grass and multiplying, unless/until they begin to exhaust the carrying capacity of accessible glens, at which point they will (tragically) starve. The <em>glens</em> are nodes in a graph, each of which has a resource attribute (<em>abundance</em>), which regenerates at a <em>growth rate</em>. The <em>sheep</em> are agents that travel between nodes, each reducing abundance by their <em>greed</em>. Groups of sheep called <em>flocks</em> share the same movement strategies and randomization seeds, so they move together as an emergent property. The complete graph is called a <em>county</em>, and may vary in size from one simulation to the next. Each iteration of a simulation is called a <em>season</em>.</p>\n<h2 id=\"what-happens-during-set-up\">What happens during set-up</h2>\n<p>The parameters listed to the left are set at the beginning of a simulation. Some are used in setting up the county graph, while some are used in iterating the state of the graph throughout the simulation.</p>\n<p>First, the graph is created. The length of one side of the graph is determined by the <em>County Size</em> parameter. Then, a number of flocks of sheep given by <em>Number of Flocks</em> are distributed to randomly selected glens. It is possible for multiple flocks to be placed in the same glen, appearing as one large flock until they move. The initial size of each flock is given by <em>Initial Flock Size</em>.</p>\n<h2 id=\"what-happens-in-each-iteration\">What happens in each iteration</h2>\n<ol>\n<li>First, the sheep eat in a randomly determined order. Each sheep tries to each a certain proportion of the glen&#39;s resources according to <em>Sheep Greed</em>, reducing the glen&#39;s abundance by that amount. If there is nothing left in the glen, the sheep becomes hungry. If a sheep has been hungry for longer than <em>Sheep Endurance</em>, it &quot;dies&quot;, ceasing to consume resources or be displayed in the visualization. If a sheep does eat, there is a chance (given by <em>Sheep Reproduction Rate</em>) that it will generate another sheep in the same flock.</li>\n<li>After the sheep have eaten, each glen&#39;s abundance is multiplied by the <em>Glen Growth Rate</em>. If the glen has nothing left, the growth rate is irrelevant.</li>\n<li>Finally, the sheep move according to <em>Strategy</em>. Three strategies are presently available:<ul>\n<li>Random: The sheep are equally likely to end on any of five glens, including their current one and any of the four ordinally proximal ones (up, down, left, right).</li>\n<li>Max Abundance: The sheep will move to one of five glens, either their current one or any of the four ordinally proximal ones (up, down, left, right). They will choose according to which one has the greatest current abundance.</li>\n<li>Weighted: The sheep will move to one of five glens, either their current one or any of the four ordinally proximal ones (up, down, left, right). They will weight the likelihood of each according to its current abundance relative to the others, but have some chance of moving to any of them.</li>\n</ul>\n</li>\n</ol>\n<p>These three steps are repeated for a number of iterations equal to <em>Number of Seasons</em>.</p>\n<h2 id=\"how-to-read-the-display\">How to read the display</h2>\n<ul>\n<li><p>Each glen will be brighter or darker depending on its abundance (metaphorically, how much grass it has left). Bright green indicates an abundance close to 1, the maximum, while a dark, dull brown indicates 0, devastation that precludes recovery.</p>\n</li>\n<li><p>Flocks move together, with eat dot representing one sheep. Sometimes more than one flock will arrive at the same glen, in which case the aggregate will look like one big flock until they move on to different glens.</p>\n</li>\n<li><p>Each sheep will be solid white if it was just able to eat, and somewhat translucent if it has gone for one or more turns without food. Sheep that have gone too long without eating and starved are still tracked in the data set, but do not appear on the display because they are completely transparent, and do not affect abundance because they no longer attempt to eat.</p>\n</li>\n</ul>\n<h2 id=\"further-information\">Further Information</h2>\n<p>This application is open source, and the JavaScript may be viewed at <a href=\"https://github.com/nathan-b-fulton/grazing-game/tree/master/src\">https://github.com/nathan-b-fulton/grazing-game/tree/master/src</a>. Questions may be directed to Nathan: <a href=\"mailto:nathan.bartholomew.fulton@gmail.com\">nathan.bartholomew.fulton@gmail.com</a>.</p>\n<p><br></p>\n";
+module.exports = "<h1 id=\"hello-\">Hello!</h1>\n<p>Welcome to <em>The Grazing Game</em>, a simple model of how mobile populations might share a finite (but regenerating) resource distributed across a fixed topology. This documentation covers the basic rules for updating the state of the resource and each population, as well as how to adjust different parameters of the model in the user interface, and run simulations under the parameters you have chosen.</p>\n<h2 id=\"how-to-use-this-application\">How to use this application</h2>\n<p>(<em>n.b.: If you are viewing this document on the GitHub source page, you may just want to go straight to <a href=\"http://grazing.games/\">http://grazing.games/</a> to play with the actual simulation application.</em>)</p>\n<ol>\n<li>Read the full explanation of The Grazing Game below to make sure you understand the parameters.</li>\n<li>Set the parameters to the left according to what kind of scenario you are interested in modeling.</li>\n<li>Press the &quot;Begin Simulation&quot; button.</li>\n<li>To view the iterations of the simulation, click the arrow buttons next to the slider at the bottom. You can also drag the slider however far you would like, including all the way to the end if you just want to see how things turn out.</li>\n<li>If you want to review or change the parameters, click the &quot;Show Parameters&quot; button. <ul>\n<li>You can then edit the parameters and click &quot;Continue Simulation&quot; in order to add seasons under the new parameters.</li>\n<li>You can also add more seasons without changing any parameters; &quot;Number of New Seasons&quot; will determine how many seasons are <em>added</em>, not how many there are in total.</li>\n<li>If you want to start over, rather than adding seasons, simply refresh the page.</li>\n<li>Note that parameters that affect the initial set-up of the county (<em>County Size</em>, <em>Number of Flocks</em>, <em>Initial Flock Size</em>) cannot be altered after initial set-up.</li>\n</ul>\n</li>\n<li>Once you are very familiar with how the automatic simulation works, you may want to try manual (AKA <em>Ur-Shepherd</em>) mode, described at the end of this document.</li>\n</ol>\n<h2 id=\"basic-concept\">Basic Concept</h2>\n<p>The Grazing Game is intended to demonstrate a number of principles to students and researchers who are interested in what modeling might reveal about shared resource management, population dynamics, and environmental sustainability. The metaphor driving the model is fairly simple: flocks of sheep wander between connected glens, eating the grass and multiplying, unless/until they begin to exhaust the carrying capacity of accessible glens, at which point they will (tragically) starve. The <em>glens</em> are nodes in a graph, each of which has a resource attribute (<em>abundance</em>), which regenerates at a <em>growth rate</em>. The <em>sheep</em> are agents that travel between nodes, each reducing abundance by their <em>greed</em>. Groups of sheep called <em>flocks</em> share the same movement strategies and randomization seeds, so they move together as an emergent property. The complete graph is called a <em>county</em>, and may vary in size from one simulation to the next. Each iteration of a simulation is called a <em>season</em>.</p>\n<h2 id=\"what-happens-during-set-up\">What happens during set-up</h2>\n<p>The parameters listed to the left are set at the beginning of a simulation. Some are used in setting up the county graph, while some are used in iterating the state of the graph throughout the simulation.</p>\n<p>First, the graph is created. The length of one side of the graph is determined by the <em>County Size</em> parameter. Then, a number of flocks of sheep given by <em>Number of Flocks</em> are distributed to randomly selected glens. It is possible for multiple flocks to be placed in the same glen, appearing as one large flock until they move. The initial size of each flock is given by <em>Initial Flock Size</em>.</p>\n<h2 id=\"what-happens-in-each-iteration\">What happens in each iteration</h2>\n<ol>\n<li>First, the sheep eat in a randomly determined order. Each sheep tries (with a chance of success equal to the glen&#39;s abundance) to each a certain proportion of the glen&#39;s resources according to <em>Sheep Greed</em>, reducing the glen&#39;s abundance by that amount. If the sheep fails to find food in the glen, it becomes hungry. If a sheep has been hungry for longer than <em>Sheep Endurance</em>, it &quot;dies&quot;, ceasing to consume resources or be displayed in the visualization. If a sheep does eat, there is a chance (given by <em>Sheep Reproduction Rate</em>) that it will generate another sheep in the same flock.</li>\n<li>After the sheep have eaten, each glen&#39;s abundance is multiplied by the <em>Glen Growth Rate</em>. If the glen has nothing left, the growth rate is irrelevant.</li>\n<li>Finally, the sheep move according to <em>Strategy</em>. Three strategies are presently available:<ul>\n<li>Random: The sheep are equally likely to end on any of five glens, including their current one and any of the four ordinally proximal ones (up, down, left, right).</li>\n<li>Max Abundance: The sheep will move to one of five glens, either their current one or any of the four ordinally proximal ones (up, down, left, right). They will choose according to which one has the greatest current abundance.</li>\n<li>Weighted: The sheep will move to one of five glens, either their current one or any of the four ordinally proximal ones (up, down, left, right). They will weight the likelihood of each according to its current abundance relative to the others, but have some chance of moving to any of them.</li>\n</ul>\n</li>\n</ol>\n<p>These three steps are repeated for a number of iterations equal to <em>Number of Seasons</em>.</p>\n<h2 id=\"how-to-read-the-display\">How to read the display</h2>\n<ul>\n<li><p>Each glen will be brighter or darker depending on its abundance (metaphorically, how much grass it has left). Bright green indicates an abundance close to 1, the maximum, while a dark, dull brown indicates 0, devastation that precludes recovery.</p>\n</li>\n<li><p>Flocks move together, with each dot representing one sheep. Sometimes more than one flock will arrive at the same glen, in which case the aggregate will look like one big flock until they move on to different glens.</p>\n</li>\n<li><p>Each sheep will be solid white if it was just able to eat, and somewhat translucent if it has gone for one or more turns without food. Sheep that have gone too long without eating and starved are still tracked in the data set, but do not appear on the display or affect abundance.</p>\n</li>\n</ul>\n<h2 id=\"manual-mode-the-ur-shepherd-\">Manual Mode (&quot;The Ur-Shepherd&quot;)</h2>\n<p>If you are interested in guiding a flock by hand, you can activate manual mode by holding down the &#39;ALT&#39; key and pressing &#39;m&#39;. The following things will happen:</p>\n<ul>\n<li>One flock, with at least one surviving sheep in the latest iteration known at the time manual mode is activated, will turn black and become your flock. You are now the Ur-Shepherd, directing them personally.</li>\n<li>A panel will open with buttons for guiding the flock up, down, left, right, or staying in the same glen for one season.</li>\n<li>The arrow keys will become active as an alternative means of guiding the sheep. The &#39;ESC&#39; keys instructs your flocks to remain where they are for one season.</li>\n<li>Whenever you move your flock, one season will be added to the simulation. All flocks other than yours will continue to employ the strategy selected for automatic movement.</li>\n</ul>\n<p>You can deactivate manual mode at any time by once again holding down the &#39;ALT&#39; key and pressing &#39;m&#39;. You can also add more fully automatic seasons while the Ur-Shepherd is active. Keep in mind that adding automatic seasons doesn&#39;t move the visualization to the last season, but manual instructions are always applied to the last season. You will probably want to move the slider all the way to the right before any time you give your flock manual direction, so that you can see where they are currently located.</p>\n<h2 id=\"further-information\">Further Information</h2>\n<p>This application is open source, and the JavaScript may be viewed at <a href=\"https://github.com/nathan-b-fulton/grazing-game/tree/master/src\">https://github.com/nathan-b-fulton/grazing-game/tree/master/src</a>. Questions may be directed to Nathan: <a href=\"mailto:nathan.bartholomew.fulton@gmail.com\">nathan.bartholomew.fulton@gmail.com</a>.</p>\n<p><br></p>\n";
+
+/***/ }),
+
+/***/ "./node_modules/keymage/keymage.js":
+/*!*****************************************!*\
+  !*** ./node_modules/keymage/keymage.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/// keymage.js - Javascript keyboard bindings handling
+/// http://github.com/piranha/keymage
+///
+/// (c) 2012-2016 Alexander Solovyov under terms of ISC License
+
+(function(define, undefined) {
+!(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+    var VERSION = '1.1.3';
+    var isOsx = typeof navigator !== 'undefined' &&
+        ~navigator.userAgent.indexOf('Mac OS X');
+
+    // Defining all keys
+    var MODPROPS = ['shiftKey', 'ctrlKey', 'altKey', 'metaKey'];
+    var MODS = {
+        'shift': 'shift',
+        'ctrl': 'ctrl', 'control': 'ctrl',
+        'alt': 'alt', 'option': 'alt',
+        'win': 'meta', 'cmd': 'meta', 'super': 'meta',
+                          'meta': 'meta',
+        // default modifier for os x is cmd and for others is ctrl
+        'defmod':  isOsx ? 'meta' : 'ctrl'
+        };
+    var MODORDER = ['shift', 'ctrl', 'alt', 'meta'];
+    var MODNUMS = [16, 17, 18, 91];
+
+    var KEYS = {
+        'backspace': 8,
+        'tab': 9,
+        'enter': 13, 'return': 13,
+        'pause': 19,
+        'caps': 20, 'capslock': 20,
+        'escape': 27, 'esc': 27,
+        'space': 32,
+        'pgup': 33, 'pageup': 33,
+        'pgdown': 34, 'pagedown': 34,
+        'end': 35,
+        'home': 36,
+        'ins': 45, 'insert': 45,
+        'del': 46, 'delete': 46,
+
+        'left': 37,
+        'up': 38,
+        'right': 39,
+        'down': 40,
+
+        '*': 106,
+        '+': 107, 'plus': 107,
+        'minus': 109,
+        ';': 186,
+        '=': 187,
+        ',': 188,
+        '-': 189,
+        '.': 190,
+        '/': 191,
+        '`': 192,
+        '[': 219,
+        '\\': 220,
+        ']': 221,
+        "'": 222
+    };
+
+    var i;
+    // numpad
+    for (i = 0; i < 10; i++) {
+        KEYS['num-' + i] = i + 95;
+    }
+    // top row 0-9
+    for (i = 0; i < 10; i++) {
+        KEYS[i.toString()] = i + 48;
+    }
+    // f1-f24
+    for (i = 1; i < 25; i++) {
+        KEYS['f' + i] = i + 111;
+    }
+    // alphabet
+    for (i = 65; i < 91; i++) {
+        KEYS[String.fromCharCode(i).toLowerCase()] = i;
+    }
+
+    // Reverse key codes
+    var KEYREV = {};
+    for (var k in KEYS) {
+        var val = KEYS[k];
+        if (!KEYREV[val] || KEYREV[val].length < k.length) {
+            KEYREV[val] = k;
+        }
+    }
+
+    // -----------------------
+    // Actual work is done here
+
+    var currentScope = '';
+    var allChains = {};
+
+    function parseKeyString(keystring) {
+        var bits = keystring.split(/-(?!$)/);
+        var button = bits[bits.length - 1];
+        var key = {code: KEYS[button]};
+
+        if (!key.code) {
+            throw 'Unknown key "' + button + '" in keystring "' +
+                keystring + '"';
+        }
+
+        var mod;
+        for (var i = 0; i < bits.length - 1; i++) {
+            button = bits[i];
+            mod = MODS[button];
+            if (!mod) {
+                    throw 'Unknown modifier "' + button + '" in keystring "' +
+                        keystring + '"';
+            }
+            key[mod] = true;
+        }
+
+        return key;
+    }
+
+    function stringifyKey(key) {
+        var s = '';
+        for (var i = 0; i < MODORDER.length; i++) {
+            if (key[MODORDER[i]]) {
+                s += MODORDER[i] + '-';
+            }
+        }
+        s += KEYREV[key.code];
+        return s;
+    }
+
+    function normalizeKeyChain(keychainString) {
+        var keychain = [];
+        var keys = keychainString.split(' ');
+
+        for (var i = 0; i < keys.length; i++) {
+            var key = parseKeyString(keys[i]);
+            key = stringifyKey(key);
+            keychain.push(key);
+        }
+
+        keychain.original = keychainString;
+        return keychain;
+    }
+
+    function eventKeyString(e) {
+        var key = {code: e.keyCode};
+        for (var i = 0; i < MODPROPS.length; i++) {
+            var mod = MODPROPS[i];
+            if (e[mod]) {
+                key[mod.slice(0, mod.length - 3)] = true;
+            }
+        }
+        return stringifyKey(key);
+    }
+
+    function getNestedChains(chains, scope) {
+        for (var i = 0; i < scope.length; i++) {
+            var bit = scope[i];
+
+            if (bit) {
+                chains = chains[bit];
+            }
+
+            if (!chains) {
+                break;
+            }
+        }
+        return chains;
+    }
+
+    var sequence = [];
+    function dispatch(e) {
+        // Skip all modifiers
+        if (~MODNUMS.indexOf(e.keyCode)) {
+            return;
+        }
+
+        var seq = sequence.slice();
+        seq.push(eventKeyString(e));
+        var scope = currentScope.split('.');
+        var matched, chains, key;
+
+        for (var i = scope.length; i >= 0; i--) {
+            chains = getNestedChains(allChains, scope.slice(0, i));
+            if (!chains) {
+                continue;
+            }
+            matched = true;
+            for (var j = 0; j < seq.length; j++) {
+                key = seq[j];
+                if (!chains[key]) {
+                    matched = false;
+                    break;
+                }
+                chains = chains[key];
+            }
+
+            if (matched) {
+                break;
+            }
+        }
+
+        var definitionScope = scope.slice(0, i).join('.');
+        var preventDefault = chains.preventDefault;
+
+        // partial match, save the sequence
+        if (matched && !chains.handlers) {
+            sequence = seq;
+            if (preventDefault) {
+                e.preventDefault();
+            }
+            return;
+        }
+
+        if (matched) {
+            for (i = 0; i < chains.handlers.length; i++) {
+                var handler = chains.handlers[i];
+                var options = handler._keymage;
+
+                var res = handler.call(options.context, e, {
+                    shortcut: options.original,
+                    scope: currentScope,
+                    definitionScope: definitionScope
+                });
+
+                if (res === false || preventDefault) {
+                    e.preventDefault();
+                }
+            }
+        }
+
+        // either matched or not, drop the sequence
+        sequence = [];
+    }
+
+    function getHandlers(scope, keychain, fn) {
+        var bits = scope.split('.');
+        var chains = allChains;
+        bits = bits.concat(keychain);
+
+        for (var i = 0, l = bits.length; i < l; i++) {
+            var bit = bits[i];
+            if (!bit) continue;
+
+            chains = chains[bit] || (chains[bit] = {});
+            if (fn && fn._keymage.preventDefault) {
+                chains.preventDefault = true;
+            }
+
+            if (i === l - 1) {
+                var handlers = chains.handlers || (chains.handlers = []);
+                return handlers;
+            }
+        }
+    }
+
+    function assignKey(scope, keychain, fn) {
+        var handlers = getHandlers(scope, keychain, fn);
+        handlers.push(fn);
+    }
+
+    function unassignKey(scope, keychain, fn) {
+        var handlers = getHandlers(scope, keychain);
+        var idx = handlers.indexOf(fn);
+        if (~idx) {
+            handlers.splice(idx, 1);
+        }
+    }
+
+    function parsed(scope, keychain, fn, options) {
+        if (keychain === undefined && fn === undefined) {
+            return function(keychain, fn) {
+                return keymage(scope, keychain, fn);
+            };
+        }
+
+        if (typeof keychain === 'function') {
+            options = fn;
+            fn = keychain;
+            keychain = scope;
+            scope = '';
+        }
+
+        var normalized = normalizeKeyChain(keychain);
+
+        return [scope, normalized, fn, options];
+    }
+
+    // optional arguments: scope, options.
+    function keymage(scope, keychain, fn, options) {
+        var args = parsed(scope, keychain, fn, options);
+        fn = args[2];
+        options = args[3];
+        fn._keymage = options || {};
+        fn._keymage.original = keychain;
+        assignKey.apply(null, args);
+
+        return function () {
+            unassignKey.apply(null, args);
+        };
+    }
+
+    keymage.unbind = function(scope, keychain, fn) {
+        var args = parsed(scope, keychain, fn);
+        unassignKey.apply(null, args);
+    };
+
+    keymage.parse = parseKeyString;
+    keymage.stringify = stringifyKey;
+
+    keymage.bindings = allChains;
+
+    keymage.setScope = function(scope) {
+        currentScope = scope ? scope : '';
+    };
+
+    keymage.getScope = function() { return currentScope; };
+
+    keymage.pushScope = function(scope) {
+        currentScope = (currentScope ? currentScope + '.' : '') + scope;
+        return currentScope;
+    };
+
+    keymage.popScope = function(scope) {
+        var i;
+
+        if (!scope) {
+            i = currentScope.lastIndexOf('.');
+            scope = currentScope.slice(i + 1);
+            currentScope = i == -1 ? '' : currentScope.slice(0, i);
+            return scope;
+        }
+
+        currentScope = currentScope.replace(
+            new RegExp('(^|\\.)' + scope + '(\\.|$).*'), '');
+        return scope;
+    };
+
+    keymage.version = VERSION;
+
+    window.addEventListener('keydown', dispatch, false);
+
+    return keymage;
+}).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+})(__webpack_require__(/*! !webpack amd define */ "./node_modules/webpack/buildin/amd-define.js"));
+
 
 /***/ }),
 
@@ -22306,6 +22662,20 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/webpack/buildin/amd-define.js":
+/*!***************************************!*\
+  !*** (webpack)/buildin/amd-define.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function() {
+	throw new Error("define cannot be used indirect");
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/zine/index.js":
 /*!************************************!*\
   !*** ./node_modules/zine/index.js ***!
@@ -22415,9 +22785,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_zine__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_zine__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var zine__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! zine */ "./node_modules/zine/index.js");
 /* harmony import */ var zine__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(zine__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _simulation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./simulation */ "./src/simulation.js");
-/* harmony import */ var _README_md__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../README.md */ "./README.md");
-/* harmony import */ var _README_md__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_README_md__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var keymage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! keymage */ "./node_modules/keymage/keymage.js");
+/* harmony import */ var keymage__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(keymage__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _simulation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./simulation */ "./src/simulation.js");
+/* harmony import */ var _README_md__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../README.md */ "./README.md");
+/* harmony import */ var _README_md__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_README_md__WEBPACK_IMPORTED_MODULE_6__);
+
+
 
 
 
@@ -22434,67 +22808,90 @@ const parameters = {
   sheepGreed: 0.05,
   sheepEndurance: 3,
   sheepReproductionRate: 0.25,
-  strategy: "random"
+  strategy: "random",
+  manual: null
 };
 const paramData = {
   numTurns: {
-    label: "Number of Seasons",
-    min: 1,
+    label: "Number of New Seasons",
+    min: 0,
     max: Infinity,
-    isFloat: false
+    isFloat: false,
+    message: "This is the number of new seasons that will be added to the simulation."
   },
   countySize: {
     label: "County Size",
     min: 1,
     max: Infinity,
-    isFloat: false
+    isFloat: false,
+    message: "This is the length (in groves) of each side of the county. It cannot be changed after seasons have been added."
   },
   glenGrowthRate: {
     label: "Glen Growth Rate",
     min: 1,
     max: Infinity,
-    isFloat: true
+    isFloat: true,
+    message: "This is the amount that the abundance of each grove will be multiplied by in the middle of each season."
   },
   numFlocks: {
     label: "Number of Flocks",
     min: 1,
     max: Infinity,
-    isFloat: false
+    isFloat: false,
+    message: "This is the number of flocks that will be added to the county initially. It cannot be changed after seasons have been added."
   },
   initialFlockSize: {
     label: "Initial Flock Size",
     min: 1,
     max: Infinity,
-    isFloat: false
+    isFloat: false,
+    message: "This is the number of sheep in each flock that will be added to the county initially. It cannot be changed after seasons have been added."
   },
   sheepGreed: {
     label: "Sheep Greed",
     min: 0,
     max: 1,
-    isFloat: true
+    isFloat: true,
+    message: "This is the amount that each sheep will attempt to eat at the beginning of each season, reducing the abundance of the grove it occupies."
   },
   sheepEndurance: {
     label: "Sheep Endurance",
     min: 0,
     max: Infinity,
-    isFloat: false
+    isFloat: false,
+    message: "This is the number of consecutive seasons in which a sheep can fail to find anything to eat before it disappears."
   },
   sheepReproductionRate: {
     label: "Sheep Reproduction Rate",
     min: 0,
     max: 1,
-    isFloat: true
+    isFloat: true,
+    message: "This is the likelihood that each sheep, if it has eaten, will reproduce and add another sheep to its flock."
   }
 };
 const paramState = {
   valid: true,
+  starting: true,
   show: true
 };
-const simulationState = Object(_simulation__WEBPACK_IMPORTED_MODULE_4__["runSimulation"])(formatParameters()); // Helper Functions
+const simulationState = Object(_simulation__WEBPACK_IMPORTED_MODULE_5__["initializeSimulation"])(formatParameters());
+const docState = {
+  show: true
+};
+const messiah = {
+  isRisen: false,
+  flock: false,
+  holyGhosts: []
+};
+const gospel = {
+  message: "" // Helper Functions
+
+};
 
 function validate(id) {
-  if (id === "strategy") return true;
+  if (id === "strategy" || "manual") return true;
   let value = Number.parseFloat(parameters[id]);
+  console.log(id);
   let {
     min,
     max,
@@ -22516,30 +22913,64 @@ function updateParameter(id, value) {
   }
 
   let playCtrls = document.getElementsByClassName('play-controls');
-  playCtrls[0].style.maxHeight = "0px";
-  let message = document.getElementById('viz-message');
-  message.style.maxHeight = "0px";
+  let i;
+
+  for (i = 0; i < playCtrls.length; i++) {
+    playCtrls[i].style.maxHeight = "0px";
+  }
+
+  if (paramState.starting === false) {
+    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(gospel, {
+      message: "You have altered some parameters. If you want to add seasons to your simulation, click 'Continue Simulation'. "
+    });
+  }
+
   Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(paramState, {
     valid
   });
 }
 
-function updateSimulation() {
+function initSim() {
+  Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(paramState, {
+    starting: false
+  });
+  Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(gospel, {
+    message: "You have now run a simulation. Click the |◀ and ▶| buttons below to adjust the view by season, or drag the slider."
+  });
+  return updateSimulation(false);
+}
+
+function contSim() {
+  simulationState.parameters = Object.assign({}, parameters);
+  simulationState.parameters.manual = null;
+  Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(gospel, {
+    message: "You have added seasons to the simulation. Click the |◀ and ▶| buttons below to adjust the view by season, or drag the slider."
+  });
+  return updateSimulation(true);
+}
+
+function updateSimulation(cont) {
   if (paramState.valid) {
-    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(simulationState, Object(_simulation__WEBPACK_IMPORTED_MODULE_4__["runSimulation"])(formatParameters()));
+    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(simulationState, cont ? Object(_simulation__WEBPACK_IMPORTED_MODULE_5__["advanceSimulation"])(simulationState) : Object(_simulation__WEBPACK_IMPORTED_MODULE_5__["initializeSimulation"])(formatParameters()));
     let ctrls = document.getElementsByClassName('control');
     let i;
 
     for (i = 0; i < ctrls.length; i++) {
+      ctrls[i].style.margin = "0px";
       ctrls[i].style.maxHeight = "0px";
     }
 
     let playCtrls = document.getElementsByClassName('play-controls');
-    playCtrls[0].style.maxHeight = "25px";
-    let message = document.getElementById('viz-message');
-    message.style.maxHeight = "100px";
+
+    for (i = 0; i < playCtrls.length; i++) {
+      playCtrls[i].style.maxHeight = "25px";
+    }
+
+    document.getElementById('countySize').disabled = true;
+    document.getElementById('numFlocks').disabled = true;
+    document.getElementById('initialFlockSize').disabled = true;
     Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(docState, {
-      showDocs: false
+      show: false
     });
     Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(paramState, {
       show: false
@@ -22552,11 +22983,15 @@ function revealParams() {
   let i;
 
   for (i = 0; i < ctrls.length; i++) {
+    ctrls[i].style.margin = "0.25rem 0";
     ctrls[i].style.maxHeight = "25px";
   }
 
   Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(paramState, {
     show: true
+  });
+  Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(gospel, {
+    message: "You have opened the parameters panel. You can adjust any parameters you'd like to alter, or just click 'Continue Simulation' to add more seasons. "
   });
 }
 
@@ -22578,15 +23013,195 @@ function setTurn(turn) {
   }
 }
 
+function blackSheepStatus() {
+  let usRejoice = false;
+
+  if (messiah.flock) {
+    let allSheep = messiah.flock.sheep;
+
+    for (let sheep in allSheep) {
+      let hungers = allSheep[sheep].hunger;
+      let hunger = hungers[hungers.length - 1];
+
+      if (hunger <= parameters.sheepEndurance) {
+        usRejoice = true;
+        break;
+      }
+    }
+  } else {
+    let flocks = simulationState.flocks;
+
+    for (let flock in flocks) {
+      let allSheep = flocks[flock].sheep;
+
+      for (let sheep in allSheep) {
+        let hungers = allSheep[sheep].hunger;
+        let hunger = hungers[hungers.length - 1];
+
+        if (hunger <= parameters.sheepEndurance) {
+          let blackFlock = flocks[flock];
+          usRejoice = true;
+          messiah.flock = blackFlock;
+          blackFlock.manual = true;
+          break;
+        }
+      }
+
+      if (messiah.flock) {
+        break;
+      }
+    }
+  }
+
+  return usRejoice;
+}
+
+function toggleManual() {
+  let blackSheep = blackSheepStatus();
+  let manCtrls = document.getElementsByClassName('manual');
+  let messiahMessage;
+  let i;
+
+  if (messiah.isRisen) {
+    for (i = 0; i < manCtrls.length; i++) {
+      manCtrls[i].style.maxHeight = "0px";
+      manCtrls[i].style.margin = "0px";
+    }
+
+    keymage__WEBPACK_IMPORTED_MODULE_4___default.a.popScope();
+    messiahMessage = "THE UR-SHEPHERD HAS RETURNED TO HER DIVINE BOWER.";
+    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(messiah, {
+      isRisen: false
+    });
+  } else {
+    for (i = 0; i < manCtrls.length; i++) {
+      manCtrls[i].style.maxHeight = "50px";
+      manCtrls[i].style.margin = "6px";
+    }
+
+    messiahMessage = blackSheep ? "THE UR-SHEPHERD IS RISEN. The Black Sheep are yours to command, O Great One. The arrow keys (or arrow buttons below) will guide them, with 'escape' (or the ⯃ button below) indicating the flock should stay in the same glen for one season." : "THE UR-SHEPHERD IS RISEN. But sadly, her flock is no more :(";
+    keymage__WEBPACK_IMPORTED_MODULE_4___default.a.pushScope('manual');
+    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(docState, {
+      show: false
+    });
+    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(messiah, {
+      isRisen: true
+    });
+    setTurn(simulationState.parameters.numTurns);
+  }
+
+  Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(gospel, {
+    message: messiahMessage
+  });
+}
+
+function manualMove(turns, glen) {
+  if (messiah.isRisen) {
+    simulationState.parameters = Object.assign({}, parameters);
+    simulationState.parameters.numTurns = 1;
+    simulationState.parameters.manual = glen;
+    updateSimulation(true);
+    turns++;
+    setTurn(turns);
+  }
+}
+
+function getManualMoves({
+  position: [column, row],
+  links
+}) {
+  let moves = [];
+
+  for (let link of links) {
+    let lcolumn = link.position[0];
+    let lrow = link.position[1];
+
+    if (lcolumn === column) {
+      if (lrow === row) {
+        moves[0] = link;
+      } else if (lrow === row - 1) {
+        moves[2] = link;
+      } else if (lrow === row + 1) {
+        moves[4] = link;
+      }
+    } else if (lrow === row) {
+      if (lcolumn === column - 1) {
+        moves[1] = link;
+      } else if (lcolumn === column + 1) {
+        moves[3] = link;
+      }
+    }
+  }
+
+  return moves;
+}
+
+function tempMessage(id) {
+  let message = id === "restore" ? gospel.message : id === "strategy" ? "This is the strategy each flock will use to decide where to move: random, go to most abundant nearby glen, or weight by abundance but still randomize partially." : paramData[id].message;
+  let messageElt = document.getElementById('viz-message');
+
+  if (messageElt !== null) {
+    let messageText = messageElt.firstChild;
+    messageText.textContent = message;
+  }
+}
+
+function resizeControls() {
+  let controlsDiv = document.getElementById('controls-wrapper');
+
+  if (controlsDiv !== null) {
+    let controlsHeight = controlsDiv.firstChild.scrollHeight;
+    let heightString = `${controlsHeight}${"px"}`;
+
+    if (controlsDiv.style.height !== controlsHeight) {
+      controlsDiv.style.height = heightString;
+    }
+  }
+}
+
 function cn(base, isValid) {
   return `${base} ${isValid ? "valid" : "invalid"}`;
 } // React Components for controls
 
 
+const MessageBox = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(gospel, ({
+  message
+}) => {
+  let messageElt = document.getElementById('viz-message');
+  let messageNewHeightString = "0pt";
+
+  if (messageElt !== null) {
+    let messageText = messageElt.firstChild;
+    messageText.textContent = message;
+    let messageNewHeight = messageText.clientHeight;
+    messageNewHeightString = messageNewHeight + 'px';
+
+    if (messageElt.style.height !== messageNewHeight) {
+      messageElt.style.height = messageNewHeightString;
+    }
+  }
+
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "viz-message",
+    height: messageNewHeightString
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, message));
+});
+const TurnsLabel = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(simulationState, ({
+  turn,
+  parameters: {
+    numTurns
+  }
+}) => {
+  let label = turn === 0 ? "Pre-season initial state." : `Season ${turn} of ${numTurns}.`;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, label);
+});
+
 const Numeric = ({
   id
 }) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  className: cn("control numeric-input", validate(id))
+  className: cn("control numeric-input", validate(id)),
+  onMouseEnter: () => tempMessage(id),
+  onMouseLeave: () => tempMessage("restore")
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
   id: id,
   type: "text",
@@ -22597,10 +23212,15 @@ const Numeric = ({
   htmlFor: id
 }, paramData[id].label));
 
-const runButton = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-  className: cn("run", paramState.valid),
-  onClick: updateSimulation
-}, "Run Simulation");
+const runButton = () => {
+  return paramState.starting ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("run", paramState.valid),
+    onClick: initSim
+  }, "Begin Simulation") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("run", paramState.valid),
+    onClick: contSim
+  }, "Continue Simulation");
+};
 
 const paramButton = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
   className: cn("run", paramState.valid),
@@ -22610,18 +23230,21 @@ const paramButton = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createEle
 const GetButton = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(paramState, ({
   show
 }) => {
-  return show ? runButton() : paramButton();
+  let mainButton = show ? runButton() : paramButton();
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "core"
+  }, mainButton, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DocToggle, null));
 });
 const ParamControls = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(paramState, () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-  id: "numTurns"
-}), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
   id: "countySize"
-}), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-  id: "glenGrowthRate"
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
   id: "numFlocks"
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
   id: "initialFlockSize"
+}), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+  id: "numTurns"
+}), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+  id: "glenGrowthRate"
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
   id: "sheepGreed"
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
@@ -22629,7 +23252,9 @@ const ParamControls = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
   id: "sheepReproductionRate"
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  className: "control"
+  className: "control",
+  onMouseEnter: () => tempMessage("strategy"),
+  onMouseLeave: () => tempMessage("restore")
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
   id: "strategy",
   onChange: event => updateParameter("strategy", event.target.value)
@@ -22641,14 +23266,69 @@ const ParamControls = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])
   value: "weighted"
 }, "Weighted")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
   htmlFor: "strategy"
-}, "Strategy")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(GetButton, null)));
+}, "Strategy"))));
+const TurnManual = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(simulationState, ({
+  parameters: {
+    numTurns
+  }
+}) => {
+  let glen = messiah.flock ? messiah.flock.glen[numTurns] : simulationState.glens[0];
+
+  if (glen === undefined) {
+    glen = simulationState.glens[0];
+  }
+
+  let moves = getManualMoves(glen);
+  let dirStrings = ['esc', 'left', 'up', 'right', 'down'];
+
+  if (messiah.flock) {
+    for (let i = 0; i < 5; i++) {
+      if (messiah.holyGhosts[i]) {
+        messiah.holyGhosts[i]();
+      }
+
+      if (moves[i] !== undefined) {
+        messiah.holyGhosts[i] = keymage__WEBPACK_IMPORTED_MODULE_4___default()('manual', dirStrings[i], function () {
+          manualMove(numTurns, moves[i]);
+        }, {
+          preventDefault: true
+        });
+      }
+    }
+  }
+
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "wrapper"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "manual"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("move", moves[1] !== null),
+    onClick: () => manualMove(numTurns, moves[2])
+  }, "\u2B89")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "manual"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("move", moves[1] !== null),
+    onClick: () => manualMove(numTurns, moves[1])
+  }, "\u2B88"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("move", moves[0] !== null),
+    onClick: () => manualMove(numTurns, moves[0])
+  }, "\u2BC3"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("move", moves[3] !== null),
+    onClick: () => manualMove(numTurns, moves[3])
+  }, "\u2B8A")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "manual"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: cn("move", moves[1] !== null),
+    onClick: () => manualMove(numTurns, moves[4])
+  }, "\u2B8B")));
+});
 const TurnSlider = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(simulationState, ({
   turn,
   parameters: {
     numTurns
   }
 }) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  id: "wrapper"
+  className: "wrapper"
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
   className: "play-controls"
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -22665,42 +23345,47 @@ const TurnSlider = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(si
   step: "1",
   onChange: event => setTurn(event.target.valueAsNumber)
 })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  id: "viz-message"
-}, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "You have now run a full simulation. Click the arrow keys to adjust the view by season, or drag the slider."))); // Display MarkDown documentation or graph visualization
+  className: "play-controls"
+}, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TurnsLabel, null))));
+const Controls = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(gospel, () => {
+  let controlsDivs = document.getElementsByClassName('controls');
+  console.log(controlsDivs);
 
-function createMarkup() {
-  return {
-    __html: _README_md__WEBPACK_IMPORTED_MODULE_5___default.a
-  };
-}
+  if (controlsDivs.length !== 0) {
+    for (let eachDiv of controlsDivs) {
+      eachDiv.addEventListener("transitionend", function () {
+        resizeControls();
+      }, false);
+    }
+  }
 
-const docState = {
-  showDocs: true
-};
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "controls-wrapper"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "controls"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "The Grazing Game"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(MessageBox, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TurnManual, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(GetButton, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ParamControls, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TurnSlider, null)));
+}); // Display MarkDown documentation or graph visualization
+
+const DocToggle = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(docState, ({
+  show
+}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  className: ` help ${show ? "shown" : "hidden"}`,
+  onClick: () => {
+    docState.show ? Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(docState, {
+      show: false
+    }) : Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(docState, {
+      show: true
+    });
+  }
+}, "?"));
 
 const Doc = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
   className: "markdown-body",
-  dangerouslySetInnerHTML: createMarkup()
+  dangerouslySetInnerHTML: {
+    __html: _README_md__WEBPACK_IMPORTED_MODULE_6___default.a
+  }
 });
 
-function toggleDocs() {
-  if (docState.showDocs) {
-    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(docState, {
-      showDocs: false
-    });
-  } else {
-    Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(docState, {
-      showDocs: true
-    });
-  }
-}
-
-const DocToggle = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(docState, ({
-  showDocs
-}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-  className: `icon ${showDocs ? "shown" : "hidden"}`,
-  onClick: toggleDocs
-}, "?"));
 const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(simulationState, ({
   turn,
   parameters,
@@ -22728,37 +23413,50 @@ const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(sim
     key: index
   }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", null, flocks.map(({
     glen,
-    sheep
-  }, index) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
-    key: index
+    sheep,
+    manual
+  }, flockIndex) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+    key: flockIndex
   }, sheep.map(({
     hunger
-  }, index) => {
+  }, sheepIndex) => {
     let currentHunger = hunger[turn];
     let r = Math.random();
     let angle = Math.random() * 2 * Math.PI;
     let cx = glen[turn].position[0] * gridSpacing + Math.cos(angle) * r * glenRadius * 0.9 + offset;
     let cy = glen[turn].position[1] * gridSpacing + Math.sin(angle) * r * glenRadius * 0.9 + offset;
     let alpha = currentHunger < 0 || currentHunger > parameters.sheepEndurance ? 0 : 1 - currentHunger / (parameters.sheepEndurance + 1);
+    let sheepFill = manual ? `rgba(0, 0, 0, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("circle", {
       r: sheepRadius,
       style: {
         transform: `translate(${cx}px, ${cy}px)`
       },
-      fill: `rgba(255, 255, 255, ${alpha})`,
-      key: index
+      fill: sheepFill,
+      key: sheepIndex
     });
   })))));
 });
 const Viz = Object(react_zine__WEBPACK_IMPORTED_MODULE_2__["connect"])(docState, ({
-  showDocs
+  show
 }) => {
-  return showDocs ? Doc() : GraphView();
+  return show ? Doc() : GraphView();
 }); // Render to DOM
 
-react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  className: "controls"
-}, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "The Grazing Game"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ParamControls, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TurnSlider, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DocToggle, null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Viz, null)), document.getElementById('root'));
+react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Controls, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Viz, null)), document.getElementById('root')); // Post-render initializations
+
+function ggInitialize() {
+  keymage__WEBPACK_IMPORTED_MODULE_4___default()('alt-m', function () {
+    toggleManual();
+  }, {
+    preventDefault: true
+  });
+  Object(zine__WEBPACK_IMPORTED_MODULE_3__["issue"])(gospel, {
+    message: "Welcome to The Grazing Game. Please customize your parameters using the fields below, and then click on the 'Begin Simulation' button."
+  });
+}
+
+ggInitialize();
 
 /***/ }),
 
@@ -22766,12 +23464,14 @@ react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_
 /*!***************************!*\
   !*** ./src/simulation.js ***!
   \***************************/
-/*! exports provided: runSimulation */
+/*! exports provided: initializeSimulation, advanceSimulation */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runSimulation", function() { return runSimulation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initializeSimulation", function() { return initializeSimulation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "advanceSimulation", function() { return advanceSimulation; });
+// Helper functions
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -22787,7 +23487,8 @@ function shuffle(array) {
 
 function byAbundance(a, b) {
   return b.currentAbundance - a.currentAbundance || Math.random() - 0.5;
-}
+} // Strategy library, should be expanded in future
+
 
 const strategies = {
   random: glens => glens[randomInt(0, glens.length)],
@@ -22813,7 +23514,7 @@ const strategies = {
 
     return glens[0];
   }
-};
+}; // Setup functions
 
 function generateGrid(parameters) {
   let countySize = parameters.countySize;
@@ -22863,9 +23564,10 @@ function addSheep(flock, turnBorn) {
   };
   flock.sheep.push(sheep);
   return sheep;
-}
+} // Exported initialization and advancement functions
 
-function runSimulation(parameters) {
+
+function initializeSimulation(parameters) {
   let glens = generateGrid(parameters);
   let allSheep = [];
   let flocks = [];
@@ -22873,7 +23575,8 @@ function runSimulation(parameters) {
   for (let curFlock = 0; curFlock < parameters.numFlocks; curFlock++) {
     let flock = {
       glen: [glens[randomInt(0, glens.length)]],
-      sheep: []
+      sheep: [],
+      manual: false
     };
     flocks.push(flock);
 
@@ -22882,7 +23585,28 @@ function runSimulation(parameters) {
     }
   }
 
-  for (let turn = 0; turn < parameters.numTurns; turn++) {
+  let state = {
+    turn: 0,
+    parameters,
+    glens,
+    flocks,
+    allSheep
+  };
+  state = advanceSimulation(state);
+  state.turn = 0;
+  return state;
+}
+function advanceSimulation({
+  turnShown,
+  parameters,
+  glens,
+  flocks,
+  allSheep
+}) {
+  let currentTurns = glens[0].abundance.length - 1;
+  let totalTurns = currentTurns + Number(parameters.numTurns);
+
+  for (let turn = currentTurns; turn < totalTurns; turn++) {
     shuffle(allSheep);
     let allNewSheep = [];
 
@@ -22915,17 +23639,18 @@ function runSimulation(parameters) {
     }
 
     for (let flock of flocks) {
-      let glen = flock.glen[turn]; //flock.glen.push(glen.links[randomInt(0, glen.links.length)]);
-
-      flock.glen.push(strategies[parameters.strategy](glen.links));
+      let glen = flock.glen[turn];
+      flock.glen.push(flock.manual & parameters.manual !== null ? parameters.manual : strategies[parameters.strategy](glen.links));
     }
   }
 
+  parameters.numTurns = glens[0].abundance.length - 1;
   return {
-    turn: 0,
+    turnShown,
     parameters,
     glens,
-    flocks
+    flocks,
+    allSheep
   };
 }
 

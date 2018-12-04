@@ -1,3 +1,5 @@
+// Helper functions
+
 function randomInt (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -14,6 +16,8 @@ function shuffle (array) {
 function byAbundance (a, b) {
   return b.currentAbundance - a.currentAbundance || Math.random() - 0.5;
 }
+
+// Strategy library, should be expanded in future
 
 const strategies = {
   random: (glens) => glens[randomInt(0, glens.length)],
@@ -38,6 +42,7 @@ const strategies = {
   }
 };
 
+// Setup functions
 
 function generateGrid (parameters) {
   let countySize = parameters.countySize;
@@ -86,13 +91,15 @@ function addSheep (flock, turnBorn) {
   return sheep;
 }
 
-export function runSimulation (parameters) {
+// Exported initialization and advancement functions
+
+export function initializeSimulation (parameters) {
   let glens = generateGrid(parameters);
   let allSheep = [];
   let flocks = [];
 
   for (let curFlock = 0; curFlock < parameters.numFlocks; curFlock++) {
-    let flock = {glen: [glens[randomInt(0, glens.length)]], sheep: []};
+    let flock = {glen: [glens[randomInt(0, glens.length)]], sheep: [], manual: false};
     flocks.push(flock);
 
     for (let i = 0; i < parameters.initialFlockSize; i++) {
@@ -100,15 +107,23 @@ export function runSimulation (parameters) {
     }
   }
 
-  for (let turn = 0; turn < parameters.numTurns; turn++) {
-    shuffle(allSheep);
+  let state = {turn: 0, parameters, glens, flocks, allSheep};
+  state = advanceSimulation(state);
+  state.turn = 0;
+  return state;
+}
 
+export function advanceSimulation ({turnShown, parameters, glens, flocks, allSheep}) {
+  let currentTurns = glens[0].abundance.length - 1;
+  let totalTurns = currentTurns + Number(parameters.numTurns);
+  for (let turn = currentTurns; turn < totalTurns; turn++) {
+    shuffle(allSheep);
     let allNewSheep = [];
+
     for (let sheep of allSheep) {
       let hunger = sheep.hunger[turn];
       if (hunger <= parameters.sheepEndurance) {
         let glen = sheep.flock.glen[turn];
-
         if (Math.random() < glen.currentAbundance) {
           glen.currentAbundance = Math.max(glen.currentAbundance - parameters.sheepGreed, 0);
           sheep.hunger.push(0);
@@ -130,10 +145,10 @@ export function runSimulation (parameters) {
 
     for (let flock of flocks) {
       let glen = flock.glen[turn];
-      //flock.glen.push(glen.links[randomInt(0, glen.links.length)]);
-      flock.glen.push(strategies[parameters.strategy](glen.links));
+      flock.glen.push(flock.manual & (parameters.manual !== null) ? parameters.manual : strategies[parameters.strategy](glen.links));
     }
   }
 
-  return {turn: 0, parameters, glens, flocks};
+  parameters.numTurns = glens[0].abundance.length - 1;
+  return {turnShown, parameters, glens, flocks, allSheep}
 }

@@ -33,6 +33,7 @@
             transition: transform 1s ease, fill 1s ease;
           }
 
+
           ol {
             list-style-type: decimal;
           }
@@ -43,16 +44,11 @@
 
 
           #viz-message {
-            max-height: 0px;
-            width: 300px;
+            height: 0px;
             clear: both;
             white-space: pre-wrap;
-            overflow: hidden;
-            transition: max-height 1s ease-in-out;
-          }
-
-          #wrapper {
-            flex-direction: column;
+            transition: height 1s ease-in-out;
+            overflow-y:hidden;
           }
 
           #root {
@@ -60,23 +56,43 @@
             width: 100vw;
             display: flex;
             flex-direction: row;
+            overflow-y: visible;
+            overflow-x: hidden;
+          }
+
+          #controls-wrapper {
+            width: 30%;
+            white-space: nowrap;
+            transition: all 1s ease-in-out;
+            background-color: #f4f7fb;
           }
 
           svg {
             flex-grow: 1;
           }
 
+          div.wrapper {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            font-style: italic;
+          }
+
           div.controls {
-          
-            padding: 0 1rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
             font-size: 1.2rem;
-            background-color: #f4f7fb;
             white-space: nowrap;
           }
 
           div.controls > * {
-            margin: 0.5rem 0;
+            padding: 0 .75rem;
+            margin: .25rem 0px;
+            flex: 0 0 auto;
             box-sizing: content-box;
+            background-color: #f4f7fb;
           }
 
           input[type="text"] {
@@ -103,11 +119,30 @@
             color: red;
           }
 
+          div.core {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+          }
+
           div.play-controls {
             max-height: 0px;
             display: flex;
             flex-direction: row;
             align-items: center;
+            justify-content: center;
+            margin: 6px;
+            overflow: hidden;
+            transition: all 1s ease-in-out;
+          }
+
+          div.manual {
+            max-height: 0px;
+            display: flex;
+            justify-content: space-evenly;
+            flex-direction: row;
+            margin: 0px;
             overflow: hidden;
             transition: max-height 1s ease-in-out;
           }
@@ -117,7 +152,7 @@
             display: flex;
             justify-content: space-between;
             overflow: hidden;
-            transition: max-height 1s ease-in-out;
+            transition: max-height 1s ease-in-out, margin 1s ease-in-out;
           }
 
           button {
@@ -136,6 +171,13 @@
             font-size: 1.25rem;
           }
 
+          button.help {
+            width: 3rem;
+            height: 3rem;
+            font-size: 2rem;
+            margin: .5rem;
+          }
+
           button.valid:active {
             background-color: #1570ff;
           }
@@ -152,6 +194,15 @@
             text-align: center;
             margin-right: 0.5rem;
             flex-shrink: 0;
+          }
+
+          button.move {
+            height: 2.5rem;
+            width: 2.5rem;
+            line-height: 2.5rem;
+            text-align: center;
+            flex-shrink: 0;
+            font-size: 200%;
           }
 
           button.shown {

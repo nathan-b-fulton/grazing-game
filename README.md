@@ -8,9 +8,14 @@ Welcome to _The Grazing Game_, a simple model of how mobile populations might sh
 
 1. Read the full explanation of The Grazing Game below to make sure you understand the parameters.
 1. Set the parameters to the left according to what kind of scenario you are interested in modeling.
-1. Press the "Run Simulation" button.
-1. To view the iterations of the simulation, click the arrow keys next to the slider at the bottom. You can also drag the slider however far you would like, including all the way to the end if you just want to see how things turn out.
-1. If you want to review or change the parameters, click the "Show Parameters" button. You can then edit the parameters and click "Run Simulation" again in order to see the effect of different parameterizations.
+1. Press the "Begin Simulation" button.
+1. To view the iterations of the simulation, click the arrow buttons next to the slider at the bottom. You can also drag the slider however far you would like, including all the way to the end if you just want to see how things turn out.
+1. If you want to review or change the parameters, click the "Show Parameters" button. 
+    * You can then edit the parameters and click "Continue Simulation" in order to add seasons under the new parameters.
+    * You can also add more seasons without changing any parameters; "Number of New Seasons" will determine how many seasons are _added_, not how many there are in total.
+    * If you want to start over, rather than adding seasons, simply refresh the page.
+    * Note that parameters that affect the initial set-up of the county (_County Size_, _Number of Flocks_, _Initial Flock Size_) cannot be altered after initial set-up.
+1. Once you are very familiar with how the automatic simulation works, you may want to try manual (AKA _Ur-Shepherd_) mode, described at the end of this document.
 
 ## Basic Concept
 
@@ -24,7 +29,7 @@ First, the graph is created. The length of one side of the graph is determined b
 
 ## What happens in each iteration
 
-1. First, the sheep eat in a randomly determined order. Each sheep tries to each a certain proportion of the glen's resources according to _Sheep Greed_, reducing the glen's abundance by that amount. If there is nothing left in the glen, the sheep becomes hungry. If a sheep has been hungry for longer than _Sheep Endurance_, it "dies", ceasing to consume resources or be displayed in the visualization. If a sheep does eat, there is a chance (given by _Sheep Reproduction Rate_) that it will generate another sheep in the same flock.
+1. First, the sheep eat in a randomly determined order. Each sheep tries (with a chance of success equal to the glen's abundance) to each a certain proportion of the glen's resources according to _Sheep Greed_, reducing the glen's abundance by that amount. If the sheep fails to find food in the glen, it becomes hungry. If a sheep has been hungry for longer than _Sheep Endurance_, it "dies", ceasing to consume resources or be displayed in the visualization. If a sheep does eat, there is a chance (given by _Sheep Reproduction Rate_) that it will generate another sheep in the same flock.
 1. After the sheep have eaten, each glen's abundance is multiplied by the _Glen Growth Rate_. If the glen has nothing left, the growth rate is irrelevant.
 1. Finally, the sheep move according to _Strategy_. Three strategies are presently available:
    * Random: The sheep are equally likely to end on any of five glens, including their current one and any of the four ordinally proximal ones (up, down, left, right).
@@ -37,9 +42,19 @@ These three steps are repeated for a number of iterations equal to _Number of Se
 
 * Each glen will be brighter or darker depending on its abundance (metaphorically, how much grass it has left). Bright green indicates an abundance close to 1, the maximum, while a dark, dull brown indicates 0, devastation that precludes recovery.
 
-* Flocks move together, with eat dot representing one sheep. Sometimes more than one flock will arrive at the same glen, in which case the aggregate will look like one big flock until they move on to different glens.
+* Flocks move together, with each dot representing one sheep. Sometimes more than one flock will arrive at the same glen, in which case the aggregate will look like one big flock until they move on to different glens.
 
-* Each sheep will be solid white if it was just able to eat, and somewhat translucent if it has gone for one or more turns without food. Sheep that have gone too long without eating and starved are still tracked in the data set, but do not appear on the display because they are completely transparent, and do not affect abundance because they no longer attempt to eat.
+* Each sheep will be solid white if it was just able to eat, and somewhat translucent if it has gone for one or more turns without food. Sheep that have gone too long without eating and starved are still tracked in the data set, but do not appear on the display or affect abundance.
+
+## Manual Mode ("The Ur-Shepherd")
+
+If you are interested in guiding a flock by hand, you can activate manual mode by holding down the 'ALT' key and pressing 'm'. The following things will happen:
+* One flock, with at least one surviving sheep in the latest iteration known at the time manual mode is activated, will turn black and become your flock. You are now the Ur-Shepherd, directing them personally.
+* A panel will open with buttons for guiding the flock up, down, left, right, or staying in the same glen for one season.
+* The arrow keys will become active as an alternative means of guiding the sheep. The 'ESC' keys instructs your flocks to remain where they are for one season.
+* Whenever you move your flock, one season will be added to the simulation. All flocks other than yours will continue to employ the strategy selected for automatic movement.
+
+You can deactivate manual mode at any time by once again holding down the 'ALT' key and pressing 'm'. You can also add more fully automatic seasons while the Ur-Shepherd is active. Keep in mind that adding automatic seasons doesn't move the visualization to the last season, but manual instructions are always applied to the last season. You will probably want to move the slider all the way to the right before any time you give your flock manual direction, so that you can see where they are currently located.
 
 ## Further Information
 
