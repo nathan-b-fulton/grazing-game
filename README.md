@@ -6,15 +6,17 @@ Welcome to _The Grazing Game_, a simple model of how mobile populations might sh
 
 (_n.b.: If you are viewing this document on the GitHub source page, you may just want to go straight to http://grazing.games/ to play with the actual simulation application._)
 
+1. Please view this application on a full-size screen and in a maximized (or at least fairly fully expanded, landscape oriented) window. It is not optimized for mobile devices, vertically oriented tablets, or the like at this time.
 1. Read the full explanation of The Grazing Game below to make sure you understand the parameters.
 1. Set the parameters to the left according to what kind of scenario you are interested in modeling.
 1. Press the "Begin Simulation" button.
-1. To view the iterations of the simulation, click the arrow buttons next to the slider at the bottom. You can also drag the slider however far you would like, including all the way to the end if you just want to see how things turn out.
+1. To view the iterations of the simulation, click the arrow buttons next to the slider at the bottom, or use the left and right arrow keys. You can also drag the slider however far you would like, including all the way to the end if you just want to see how things turn out.
 1. If you want to review or change the parameters, click the "Show Parameters" button. 
     * You can then edit the parameters and click "Continue Simulation" in order to add seasons under the new parameters.
     * You can also add more seasons without changing any parameters; "Number of New Seasons" will determine how many seasons are _added_, not how many there are in total.
     * If you want to start over, rather than adding seasons, simply refresh the page.
     * Note that parameters that affect the initial set-up of the county (_County Size_, _Number of Flocks_, _Initial Flock Size_) cannot be altered after initial set-up.
+1. You can return to this documentation at any time by pressing the __?__ button. You can also see several charts of basic statistical aspects of the simulation by pressing the 🗠 button, or return to the county display via ፨.
 1. Once you are very familiar with how the automatic simulation works, you may want to try manual (AKA _Ur-Shepherd_) mode, described at the end of this document.
 
 ## Basic Concept
@@ -29,16 +31,16 @@ First, the graph is created. The length of one side of the graph is determined b
 
 ## What happens in each iteration
 
-1. First, the sheep eat in a randomly determined order. Each sheep tries (with a chance of success equal to the glen's abundance) to each a certain proportion of the glen's resources according to _Sheep Greed_, reducing the glen's abundance by that amount. If the sheep fails to find food in the glen, it becomes hungry. If a sheep has been hungry for longer than _Sheep Endurance_, it "dies", ceasing to consume resources or be displayed in the visualization. If a sheep does eat, there is a chance (given by _Sheep Reproduction Rate_) that it will generate another sheep in the same flock.
+1. First, the sheep eat in a randomly determined order. Each sheep tries (with a chance of success equal to the glen's abundance) to eat a certain proportion of the glen's resources, set by _Sheep Greed_, reducing the glen's abundance by that amount. If the sheep fails to find food in the glen, it becomes hungry. If a sheep has been hungry for longer than _Sheep Endurance_, it "dies", ceasing to consume resources or be displayed in the visualization. If a sheep does eat, there is a chance (given by _Sheep Reproduction Rate_) that it will generate another sheep in the same flock.
 1. After the sheep have eaten, each glen's abundance is multiplied by the _Glen Growth Rate_. If the glen has nothing left, the growth rate is irrelevant.
 1. Finally, the sheep move according to _Strategy_. Three strategies are presently available:
    * Random: The sheep are equally likely to end on any of five glens, including their current one and any of the four ordinally proximal ones (up, down, left, right).
    * Max Abundance: The sheep will move to one of five glens, either their current one or any of the four ordinally proximal ones (up, down, left, right). They will choose according to which one has the greatest current abundance.
    * Weighted: The sheep will move to one of five glens, either their current one or any of the four ordinally proximal ones (up, down, left, right). They will weight the likelihood of each according to its current abundance relative to the others, but have some chance of moving to any of them.
 
-These three steps are repeated for a number of iterations equal to _Number of Seasons_.
+These three steps are repeated for a number of iterations equal to _Number of New Seasons_.
 
-## How to read the display
+## How to read the county display (፨)
 
 * Each glen will be brighter or darker depending on its abundance (metaphorically, how much grass it has left). Bright green indicates an abundance close to 1, the maximum, while a dark, dull brown indicates 0, devastation that precludes recovery.
 
@@ -48,13 +50,13 @@ These three steps are repeated for a number of iterations equal to _Number of Se
 
 ## Manual Mode ("The Ur-Shepherd")
 
-If you are interested in guiding a flock by hand, you can activate manual mode by holding down the 'ALT' key and pressing 'm'. The following things will happen:
+Once you have set up the initial simulation, if you are interested in guiding a flock by hand, you can activate manual mode by holding down the 'ALT' key and pressing 'm'. The following things will happen:
 * One flock, with at least one surviving sheep in the latest iteration known at the time manual mode is activated, will turn black and become your flock. You are now the Ur-Shepherd, directing them personally.
 * A panel will open with buttons for guiding the flock up, down, left, right, or staying in the same glen for one season.
-* The arrow keys will become active as an alternative means of guiding the sheep. The 'ESC' keys instructs your flocks to remain where they are for one season.
+* The w, a, s, d and x keys will become active as an alternative means of guiding the sheep.
 * Whenever you move your flock, one season will be added to the simulation. All flocks other than yours will continue to employ the strategy selected for automatic movement.
 
-You can deactivate manual mode at any time by once again holding down the 'ALT' key and pressing 'm'. You can also add more fully automatic seasons while the Ur-Shepherd is active. Keep in mind that adding automatic seasons doesn't move the visualization to the last season, but manual instructions are always applied to the last season. You will probably want to move the slider all the way to the right before any time you give your flock manual direction, so that you can see where they are currently located.
+You can deactivate manual mode at any time by once again holding down the 'ALT' key and pressing 'm'. You can also add more fully automatic seasons even after the Ur-Shepherd has been activated. Keep in mind that adding automatic seasons doesn't move the visualization to the last season, but manual instructions are always applied to the last season. You will probably want to move the slider all the way to the right before any time you give your flock manual direction, so that you can see where they are currently located.
 
 ## Further Information
 

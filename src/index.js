@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryContainer, VictoryLegend} from 'victory';
 import {connect} from 'react-zine';
 import {issue} from 'zine';
 import keymage from 'keymage';
 import {initializeSimulation} from './simulation';
 import {advanceSimulation} from './simulation';
+import {abundanceStats} from './data';
+import {sheepStats} from './data';
 import html from '../README.md';
 
 // State Containers & Constants
@@ -37,7 +40,7 @@ const paramState = {valid: true, starting: true, show: true};
 
 const simulationState = initializeSimulation(formatParameters());
 
-const docState = {show:true};
+const viewState = {show:"docs"};
 
 const messiah = {isRisen: false, flock: false, holyGhosts: []};
 
@@ -66,11 +69,6 @@ function updateParameter (id, value) {
       break;
     }
   }
-  let playCtrls = document.getElementsByClassName('play-controls');
-  let i;
-  for (i = 0; i < playCtrls.length; i++) {
-    playCtrls[i].style.maxHeight = "0px";
-  }
   if (paramState.starting===false) {
     issue(gospel, {message: "You have altered some parameters. If you want to add seasons to your simulation, click 'Continue Simulation'. "});
   }
@@ -79,14 +77,20 @@ function updateParameter (id, value) {
 
 function initSim () {
   issue(paramState, {starting: false});
-  issue(gospel, {message: "You have now run a simulation. Click the |◀ and ▶| buttons below to adjust the view by season, or drag the slider."});
-  return updateSimulation(false)
+  let newCounty = updateSimulation(false);
+  document.getElementById('root').scrollTop=0;
+  toggleViewButtons(false);
+  keymage('alt-m', function() { toggleManual() }, {preventDefault: true});
+  keymage('left', function() {setTurn(Math.max(0, simulationState.turn - 1))});
+  keymage('right', function() {setTurn(Math.min(simulationState.parameters.numTurns, simulationState.turn + 1))});
+  issue(gospel, {message: "You have now run a simulation. Click the |◀ and ▶| buttons below the county display to adjust the view by season, or use the left and right arrow keys, or drag the slider."});
+  return newCounty;
 }
 
 function contSim () {
   simulationState.parameters = Object.assign({}, parameters);
   simulationState.parameters.manual = null;
-  issue(gospel, {message: "You have added seasons to the simulation. Click the |◀ and ▶| buttons below to adjust the view by season, or drag the slider."});
+  issue(gospel, {message: "You have added seasons to the simulation. Click the |◀ and ▶| buttons below the county display to adjust the view by season, or use the left and right arrow keys, or drag the slider."});
   return updateSimulation(true);
 }
 
@@ -99,14 +103,10 @@ function updateSimulation (cont) {
       ctrls[i].style.margin =  "0px";
       ctrls[i].style.maxHeight = "0px";
     }
-    let playCtrls = document.getElementsByClassName('play-controls');
-    for (i = 0; i < playCtrls.length; i++) {
-      playCtrls[i].style.maxHeight = "25px";
-    }
     document.getElementById('countySize').disabled = true;
     document.getElementById('numFlocks').disabled = true;
     document.getElementById('initialFlockSize').disabled = true;
-    issue(docState, {show: false});
+    if (viewState.show === "docs") issue(viewState, {show: "county"});
     issue(paramState, {show: false})
   }
 }
@@ -133,6 +133,14 @@ function formatParameters () {
 function setTurn (turn) {
   if (turn !== simulationState.turn) {
     issue(simulationState, {turn});
+    issue(viewState, {show: "county"});
+  }
+}
+
+function toggleViewButtons(disabled) {
+  let vbs = document.getElementsByClassName('view-button');
+  for (let vb of vbs) {
+    vb.disabled = disabled;
   }
 }
 
@@ -189,10 +197,11 @@ function toggleManual () {
       manCtrls[i].style.maxHeight = "50px";
       manCtrls[i].style.margin = "6px";
     }
-    messiahMessage = blackSheep ? "THE UR-SHEPHERD IS RISEN. The Black Sheep are yours to command, O Great One. The arrow keys (or arrow buttons below) will guide them, with 'escape' (or the ⯃ button below) indicating the flock should stay in the same glen for one season." : "THE UR-SHEPHERD IS RISEN. But sadly, her flock is no more :(";
+    messiahMessage = blackSheep ? "THE UR-SHEPHERD IS RISEN. The Black Sheep are yours to command, O Great One. The w/a/s/d keys (or labeled buttons below) will guide them, with 'x' indicating the flock should stay in the same glen for one season." : "THE UR-SHEPHERD IS RISEN. But sadly, her flock is no more :(";
     keymage.pushScope('manual');
-    issue(docState, {show: false});
+    issue(viewState, {show: "county"});
     issue(messiah, {isRisen: true});
+    issue(paramState, {show: false})
     setTurn(simulationState.parameters.numTurns);
   }
   issue(gospel, {message: messiahMessage});
@@ -234,7 +243,7 @@ function getManualMoves ({position: [column, row], links}) {
 }
 
 function tempMessage (id) {
-  let message = (id === "restore") ? gospel.message : (id === "strategy") ? "This is the strategy each flock will use to decide where to move: random, go to most abundant nearby glen, or weight by abundance but still randomize partially." : paramData[id].message;
+  let message = (id === "restore") ? gospel.message : (id === "strategy") ? "This is the strategy each flock will use to decide where to move. See the documentation (click '?') for descriptions of currently available strategies." : paramData[id].message;
   let messageElt = document.getElementById('viz-message');
   if (messageElt !== null) {
     let messageText = messageElt.firstChild;
@@ -245,9 +254,9 @@ function tempMessage (id) {
 function resizeControls () {
   let controlsDiv = document.getElementById('controls-wrapper');
     if (controlsDiv !== null) {
-      let controlsHeight = controlsDiv.firstChild.scrollHeight;
-      let heightString = `${ controlsHeight }${"px"}`;
+      let controlsHeight = controlsDiv.firstChild.scrollHeight + 12;
       if (controlsDiv.style.height !== controlsHeight) {
+        let heightString = `${ controlsHeight }${"px"}`;
         controlsDiv.style.height = heightString;
       }
     }
@@ -305,7 +314,6 @@ const GetButton = connect(paramState, ({show}) => {
   return (
     <div className='core'>
       {mainButton}
-      <DocToggle />
     </div>)
 });
 
@@ -336,7 +344,7 @@ const TurnManual = connect(simulationState, ({parameters: {numTurns}}) => {
     glen = simulationState.glens[0];
   }
   let moves = getManualMoves(glen);
-  let dirStrings = ['esc', 'left', 'up', 'right', 'down'];
+  let dirStrings = ['x', 'a', 'w', 'd', 's'];
   if (messiah.flock) {
     for (let i=0; i<5; i++) {
       if (messiah.holyGhosts[i]) {
@@ -351,15 +359,15 @@ const TurnManual = connect(simulationState, ({parameters: {numTurns}}) => {
   return (
   <div className="wrapper">
     <div className="manual">
-      <button className={cn("move", moves[1] !== null)} onClick={() => manualMove(numTurns, moves[2])}>⮉</button>
+      <button className={cn("move", moves[1] !== null)} onClick={() => manualMove(numTurns, moves[2])}>w</button>
     </div>
     <div className="manual">
-      <button className={cn("move", moves[1] !== null)} onClick={() => manualMove(numTurns, moves[1])}>⮈</button>
-      <button className={cn("move", moves[0] !== null)} onClick={() => manualMove(numTurns, moves[0])}>⯃</button>
-      <button className={cn("move", moves[3] !== null)} onClick={() => manualMove(numTurns, moves[3])}>⮊</button>
+      <button className={cn("move", moves[1] !== null)} onClick={() => manualMove(numTurns, moves[1])}>a</button>
+      <button className={cn("move", moves[0] !== null)} onClick={() => manualMove(numTurns, moves[0])}>x</button>
+      <button className={cn("move", moves[3] !== null)} onClick={() => manualMove(numTurns, moves[3])}>d</button>
     </div>
     <div className="manual">
-      <button className={cn("move", moves[1] !== null)} onClick={() => manualMove(numTurns, moves[4])}>⮋</button>
+      <button className={cn("move", moves[1] !== null)} onClick={() => manualMove(numTurns, moves[4])}>s</button>
     </div>
   </div>
 )});
@@ -385,7 +393,6 @@ const TurnSlider = connect(simulationState, ({turn, parameters: {numTurns}}) => 
 
 const Controls = connect(gospel, () => {
   let controlsDivs = document.getElementsByClassName('controls');
-  console.log(controlsDivs);
   if (controlsDivs.length !== 0) {
     for (let eachDiv of controlsDivs) {
       eachDiv.addEventListener("transitionend", function() {
@@ -401,7 +408,6 @@ return (
       <TurnManual />
       <GetButton />
       <ParamControls />
-      <TurnSlider />
     </div>
   </div>
 )
@@ -410,11 +416,160 @@ return (
 
 // Display MarkDown documentation or graph visualization
 
-const DocToggle = connect(docState, ({show}) => 
-( <button className={` help ${show ? "shown" : "hidden"}`} onClick={() => {docState.show ? issue(docState, {show: false}) : issue(docState, {show: true})}}>?</button> )
-)
+const ViewToggle = (target, label) => connect(viewState, ({show}) => ( 
+    <button className={` view-button ${(show === target) ? "shown" : "hidden"}`} onClick={() => {if (viewState.show !== target) issue(viewState, {show: target}); document.getElementById('root').scrollTop=0; resizeControls()}}>{label}</button> )
+);
 
-const Doc = () => ( <div className="markdown-body" dangerouslySetInnerHTML={{__html: html}} /> );
+const DocToggle = ViewToggle("docs", "?");
+
+const CountyToggle = ViewToggle("county", "፨");
+
+const ChartToggle = ViewToggle("charts", "🗠");
+
+const VizControls = () => (
+  <div id="displays-wrapper">
+    <DocToggle />
+    <CountyToggle />
+    <ChartToggle />
+  </div>
+);
+
+const Doc = () => ( <div className="markdown-body" dangerouslySetInnerHTML={{__html: html}} height="auto" /> );
+
+const CountyCharts = connect(simulationState, ({parameters, glens, flocks}) => {
+  let endurance = parameters.sheepEndurance;
+  let aStats = abundanceStats(glens);
+  let sStats = sheepStats(flocks, endurance);
+  let maxX = aStats.means.length - 1;
+  let domainX = [0, maxX];
+  let domainAY = [0, 1.1];
+  let domainSY = [0, sStats.totalSheep];
+  let domainFY = [0, sStats.flockMax];
+
+  return (
+    <div className="charts">
+      <VictoryChart
+      theme={VictoryTheme.material}
+      width={1000} height={500}
+      animate={{duration: 500}}
+      containerComponent={
+        <VictoryContainer 
+        width={1000} height={600} 
+        style={{ parent: { maxWidth: "80%" } }}
+        className="vchart" />
+      }>
+          <VictoryLegend x={125} y={500}
+            title="Average Abundance by Season"
+            centerTitle
+            orientation="horizontal"
+            gutter={20}
+            style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
+            data={[
+              { name: "Mean", symbol: { fill: "green" } },
+              { name: "Median", symbol: { fill: "brown" } }
+            ]}
+          />
+          <VictoryLine
+              style={{data:
+              {stroke: "brown", strokeWidth: 3}
+              }}
+              data={aStats.medians}
+          />
+          <VictoryLine
+              style={{data:
+              {stroke: "green", strokeWidth: 3}
+              }}
+              data={aStats.means}
+          />
+          <VictoryAxis 
+            domain={domainX}
+            theme={VictoryTheme.material} />
+          <VictoryAxis 
+            dependentAxis
+            domain={domainAY}
+            theme={VictoryTheme.material}
+          />
+      </VictoryChart>
+      <VictoryChart
+      theme={VictoryTheme.material}
+      width={1000} height={500}
+      animate={{duration: 500}}
+      containerComponent={
+        <VictoryContainer 
+        width={1000} height={600} 
+        style={{ parent: { maxWidth: "80%" } }}
+        className="vchart" />
+      }>
+          <VictoryLegend x={125} y={500}
+            title="Average (Surviving) Flock Size by Season"
+            centerTitle
+            orientation="horizontal"
+            gutter={20}
+            style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
+            data={[
+              { name: "Mean", symbol: { fill: "grey" } },
+              { name: "Median", symbol: { fill: "black" } }
+            ]}
+          />
+          <VictoryLine
+              style={{data:
+              {stroke: "black", strokeWidth: 3}
+              }}
+              data={sStats.medianFlocks}
+          />
+          <VictoryLine
+              style={{data:
+              {stroke: "grey", strokeWidth: 3}
+              }}
+              data={sStats.meanFlocks}
+          />
+          <VictoryAxis 
+            domain={domainX}
+            theme={VictoryTheme.material} />
+          <VictoryAxis 
+            dependentAxis
+            domain={domainFY}
+            theme={VictoryTheme.material}
+          />
+      </VictoryChart>
+      <VictoryChart
+      theme={VictoryTheme.material}
+      width={1000} height={500}
+      animate={{duration: 500}}
+      containerComponent={
+        <VictoryContainer 
+        width={1000} height={600} 
+        style={{ parent: { maxWidth: "80%" } }}
+        className="vchart" />
+      }>
+          <VictoryLegend x={125} y={500}
+            title="Total Sheep Population by Season"
+            centerTitle
+            orientation="horizontal"
+            gutter={20}
+            style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
+            data={[
+              { name: "Population", symbol: { fill: "black" } }
+            ]}
+          />
+          <VictoryLine
+              style={{data:
+              {stroke: "black", strokeWidth: 3}
+              }}
+              data={sStats.populations}
+          />
+          <VictoryAxis 
+            domain={domainX}
+            theme={VictoryTheme.material} />
+          <VictoryAxis 
+            dependentAxis
+            domain={domainSY}
+            theme={VictoryTheme.material}
+            />
+      </VictoryChart>
+    </div>
+  )
+});
 
 const GraphView = connect(simulationState, ({turn, parameters, glens, flocks}) => {
   let gridSpacing = 1000 / parameters.countySize;
@@ -422,6 +577,7 @@ const GraphView = connect(simulationState, ({turn, parameters, glens, flocks}) =
   let sheepRadius = glenRadius * 0.075;
   let offset = gridSpacing / 2;
   return (
+    <div className='charts'>
     <svg viewBox="0 0 1000 1000">
       <rect width="100%" height="100%" fill="rgb(167, 182, 198)" />
       <g>
@@ -446,11 +602,24 @@ const GraphView = connect(simulationState, ({turn, parameters, glens, flocks}) =
         ))}
       </g>
     </svg>
+    <TurnSlider />
+    </div>
   );
 });
 
-const Viz = connect(docState, ({show}) => {
-  return show ? Doc() : GraphView();
+const Viz = connect(viewState, ({show}) => {
+  let viz;
+  switch(show) {
+    case "docs":
+        viz = Doc();
+        break;
+    case "charts":
+        viz = CountyCharts();
+        break;
+    default:
+        viz = GraphView();
+  }
+  return viz;
   });
 
 
@@ -459,14 +628,17 @@ const Viz = connect(docState, ({show}) => {
 ReactDOM.render((
   <>
     <Controls />
-    <Viz />
+    <VizControls />
+    <div id="view-wrapper">
+      <Viz />
+    </div>
   </>
 ), document.getElementById('root'));
 
 // Post-render initializations
 
 function ggInitialize () {
-  keymage('alt-m', function() { toggleManual() }, {preventDefault: true});
+  toggleViewButtons(true);
   issue(gospel, {message: "Welcome to The Grazing Game. Please customize your parameters using the fields below, and then click on the 'Begin Simulation' button."});
 }
 

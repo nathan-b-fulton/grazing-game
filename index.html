@@ -2,30 +2,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="github-markdown.css">
-<style>
-    .markdown-body {
-        box-sizing: border-box;
-        min-width: 200px;
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 45px;
-        background-color: darkgreen;
-        color: seashell;
-    }
- 
-    @media (max-width: 767px) {
-        .markdown-body {
-            padding: 15px;
-        }
-    }
-</style>
 <html>
     <head>
         <title>The Grazing Game</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link id='main-stylesheet' rel="stylesheet" type="text/css" href="https://unpkg.com/carbon-components/css/carbon-components.css">
         <style>
-          body {
+          body { 
             background-color: darkgreen;
           }
 
@@ -42,7 +25,6 @@
             list-style-type: circle;
           }
 
-
           #viz-message {
             height: 0px;
             clear: both;
@@ -56,19 +38,67 @@
             width: 100vw;
             display: flex;
             flex-direction: row;
-            overflow-y: visible;
+            overflow-y: scroll;
             overflow-x: hidden;
           }
 
           #controls-wrapper {
+            position: sticky;
+            top: 0;
             width: 30%;
             white-space: nowrap;
             transition: all 1s ease-in-out;
             background-color: #f4f7fb;
           }
 
+          #displays-wrapper {
+            position: sticky;
+            top: 0;
+            width: 5%;
+            display: flex;
+            justify-content: flex-start;
+            align-content: center;
+            flex-direction: column;
+          }
+
+          #view-wrapper {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-evenly;
+            align-content: center;
+            width: 65%;
+            overflow-y: visible;
+          }
+
+          #view-wrapper > * {
+            padding: 15 45px;
+          }
+
+          .markdown-body {
+            margin: 0 auto;
+            padding: 45px;
+            color: seashell;
+          }
+ 
+          @media (max-width: 767px) {
+            .markdown-body {
+            padding: 15px;
+            }
+          }
+
           svg {
             flex-grow: 1;
+          }
+
+          div.charts {
+            margin: 0 1rem;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+          }
+
+          .vchart {
+            background-color: #f4f7fb;
           }
 
           div.wrapper {
@@ -91,7 +121,7 @@
             padding: 0 .75rem;
             margin: .25rem 0px;
             flex: 0 0 auto;
-            box-sizing: content-box;
+            box-sizing: border-box;
             background-color: #f4f7fb;
           }
 
@@ -127,7 +157,7 @@
           }
 
           div.play-controls {
-            max-height: 0px;
+            max-height: 25px;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -135,6 +165,7 @@
             margin: 6px;
             overflow: hidden;
             transition: all 1s ease-in-out;
+            color: #f4f7fb;
           }
 
           div.manual {
@@ -171,11 +202,17 @@
             font-size: 1.25rem;
           }
 
-          button.help {
+          button.view-button {
             width: 3rem;
             height: 3rem;
             font-size: 2rem;
-            margin: .5rem;
+            margin: 3rem .5rem;
+          }
+
+          button.view-button:disabled{
+            background-color: gray;
+            color: darkgray;
+            cursor: not-allowed;
           }
 
           button.valid:active {
@@ -206,11 +243,11 @@
           }
 
           button.shown {
-            background-color: darkgreen;
+            background-color: #0d47a1;
           }
 
           button.hidden {
-            background-color: #0d47a1;
+            background-color: darkgreen;
           }
 
           input[type="range"] {
