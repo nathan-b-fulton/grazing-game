@@ -45,6 +45,7 @@ export function sheepStats (flocks, endurance) {
             if (flockPop > 0) flockPops.push(flockPop);
             population += flockPop;
         }
+        if (flockPops.length === 0) flockPops = [0];
         populations.push({ x, y: population });
         medianFlocks.push({ x, y: statistic.median(flockPops)});
         meanFlocks.push({ x, y: statistic.mean(flockPops)});

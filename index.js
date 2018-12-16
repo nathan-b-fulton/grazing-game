@@ -71665,6 +71665,7 @@ function sheepStats(flocks, endurance) {
       population += flockPop;
     }
 
+    if (flockPops.length === 0) flockPops = [0];
     populations.push({
       x,
       y: population
