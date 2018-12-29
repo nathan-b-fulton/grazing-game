@@ -72142,29 +72142,33 @@ function getManualMoves({
 }
 
 function tempMessage(id) {
-  let message = id === "restore" ? gospel.message : id === "strategy" ? "This is the strategy each flock will use to decide where to move. See the documentation (click '?') for descriptions of currently available strategies." : paramData[id].message;
-  let messageElt = document.getElementById('viz-message');
+  // This places a temporary mouseover message in the help window.
+  let message = id === "restore" ? gospel.message : id === "strategy" ? "This is the strategy each flock will use to decide where to move. See the documentation (click '?') for descriptions of currently available strategies." : paramData[id].message; // Set the message.
+
+  let messageElt = document.getElementById('viz-message'); // Get the message window.
 
   if (messageElt !== null) {
     let messageText = messageElt.firstChild;
-    messageText.textContent = message;
+    messageText.textContent = message; // Set text content of window to message. 
   }
 }
 
 function resizeControls() {
+  // We sometimes need to correct the height of the control panel.
   let controlsDiv = document.getElementById('controls-wrapper');
 
   if (controlsDiv !== null) {
-    let controlsHeight = controlsDiv.firstChild.scrollHeight + 12;
+    let controlsHeight = controlsDiv.firstChild.scrollHeight + 12; // There's an intermediate div.
 
     if (controlsDiv.style.height !== controlsHeight) {
       let heightString = `${controlsHeight}${"px"}`;
-      controlsDiv.style.height = heightString;
+      controlsDiv.style.height = heightString; // Match its height.
     }
   }
 }
 
 function cn(base, isValid) {
+  // This is just a little formatting utility.
   return `${base} ${isValid ? "valid" : "invalid"}`;
 } // React Components for controls
 
@@ -72172,13 +72176,17 @@ function cn(base, isValid) {
 const MessageBox = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(gospel, ({
   message
 }) => {
+  // The help message window subscribes to a content string.
   let messageElt = document.getElementById('viz-message');
   let messageNewHeightString = "0pt";
 
   if (messageElt !== null) {
-    let messageText = messageElt.firstChild;
+    // If the message box has been rendered...
+    let messageText = messageElt.firstChild; // ...its first child is where we put our message.
+
     messageText.textContent = message;
-    let messageNewHeight = messageText.clientHeight;
+    let messageNewHeight = messageText.clientHeight; // Resize the enclosing box to match content.
+
     messageNewHeightString = messageNewHeight + 'px';
 
     if (messageElt.style.height !== messageNewHeight) {
@@ -72186,10 +72194,12 @@ const MessageBox = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(go
     }
   }
 
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    id: "viz-message",
-    height: messageNewHeightString
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, message));
+  return (// This is the actual React element.
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      id: "viz-message",
+      height: messageNewHeightString
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, message))
+  );
 });
 const TurnsLabel = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(simulationState, ({
   turn,
@@ -72199,42 +72209,50 @@ const TurnsLabel = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(si
 }) => {
   let label = turn === 0 ? "Pre-season initial state." : `Season ${turn} of ${numTurns}.`;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, label);
-});
+}); // Label for what season we're in, subscribes to global state.
 
 const Numeric = ({
   id
-}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+}) => // Numeric control panel elements have a common design pattern.
+react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
   className: cn("control numeric-input", validate(id)),
   onMouseEnter: () => tempMessage(id),
-  onMouseLeave: () => tempMessage("restore")
+  onMouseLeave: () => tempMessage("restore") // mouseover help message functions
+
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
   id: id,
   type: "text",
   value: parameters[id],
-  onChange: event => updateParameter(id, event.target.value),
+  onChange: event => updateParameter(id, event.target.value) // Event handler for changes in value
+  ,
   required: true
 }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
   htmlFor: id
 }, paramData[id].label));
 
 const runButton = () => {
+  // Get the correct simulation advancing button.
   return paramState.starting ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: cn("run", paramState.valid),
     onClick: initSim
-  }, "Begin Simulation") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  }, "Begin Simulation") : // For intitializing
+  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: cn("run", paramState.valid),
     onClick: contSim
-  }, "Continue Simulation");
+  }, "Continue Simulation") // For continuing
+  ;
 };
 
 const paramButton = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
   className: cn("run", paramState.valid),
   onClick: revealParams
-}, "Show Parameters");
+}, "Show Parameters"); // Button to unfold parameter controls
+
 
 const GetButton = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(paramState, ({
   show
 }) => {
+  // Get the correct main simulation UI button.
   let mainButton = show ? runButton() : paramButton();
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "core"
@@ -72243,8 +72261,11 @@ const GetButton = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(par
 const ParamControls = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(paramState, ({
   show
 }) => {
-  let marginString = show ? "0.25rem 0" : "0";
-  let heightString = show ? "25px" : "0";
+  // This subscribes to the parameter controls display state...
+  let marginString = show ? "0.25rem 0" : "0"; // ...and expands or contracts the margins...
+
+  let heightString = show ? "25px" : "0"; // ...and height of the parameters panel.
+
   let ctrls = document.getElementsByClassName('control');
 
   for (let ctrl of ctrls) {
@@ -72252,60 +72273,71 @@ const ParamControls = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])
     ctrl.style.maxHeight = heightString;
   }
 
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "countySize"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "numFlocks"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "initialFlockSize"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "numTurns"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "glenGrowthRate"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "sheepGreed"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "sheepEndurance"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
-    id: "sheepReproductionRate"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "control",
-    onMouseEnter: () => tempMessage("strategy"),
-    onMouseLeave: () => tempMessage("restore")
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-    id: "strategy",
-    onChange: event => updateParameter("strategy", event.target.value)
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-    value: "random"
-  }, "Random"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-    value: "maxAbundance"
-  }, "Max Abundance"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-    value: "weighted"
-  }, "Weighted")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
-    htmlFor: "strategy"
-  }, "Strategy")));
+  return (// Then returns the React element for the entire panel.
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "countySize"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "numFlocks"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "initialFlockSize"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "numTurns"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "glenGrowthRate"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "sheepGreed"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "sheepEndurance"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Numeric, {
+      id: "sheepReproductionRate"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "control",
+      onMouseEnter: () => tempMessage("strategy") // mouseover help message functions
+      ,
+      onMouseLeave: () => tempMessage("restore")
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+      // This is the strategy select menu 
+      id: "strategy",
+      onChange: event => updateParameter("strategy", event.target.value) // Event handler for changes in value
+
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+      value: "random"
+    }, "Random"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+      value: "maxAbundance"
+    }, "Max Abundance"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+      value: "weighted"
+    }, "Weighted")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+      htmlFor: "strategy"
+    }, "Strategy")))
+  );
 });
 const TurnManual = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(simulationState, ({
   parameters: {
     numTurns
   }
 }) => {
-  let glen = messiah.flock ? messiah.flock.glen[numTurns] : simulationState.glens[0];
+  // This is the control panel for manually guiding flocks. It subscribes to the global state, specifically to how many seasons have been modeled.
+  let glen = messiah.flock ? messiah.flock.glen[numTurns] : simulationState.glens[0]; // Look for the glen the black sheep flock is in, but if there isn't one yet use a placeholder.
 
   if (glen === undefined) {
+    // Also use placeholder for corner case where the black sheep flock exists but isn't assigned a glen.
     glen = simulationState.glens[0];
   }
 
-  let moves = getManualMoves(glen);
-  let dirStrings = ['x', 'a', 'w', 'd', 's'];
+  let moves = getManualMoves(glen); // This returns an array of glens the black sheep flock could move to.
+
+  let dirStrings = ['x', 'a', 'w', 'd', 's']; // These are the labels for keys to bind below.
 
   if (messiah.flock) {
     for (let i = 0; i < 5; i++) {
+      // This manages keymage key binding listeners.
       if (messiah.holyGhosts[i]) {
+        // Release any that exist...
         messiah.holyGhosts[i]();
       }
 
       if (moves[i] !== undefined) {
+        // Create new ones for all defined moves.
         messiah.holyGhosts[i] = keymage__WEBPACK_IMPORTED_MODULE_5___default()('manual', dirStrings[i], function () {
           manualMove(numTurns, moves[i]);
         }, {
@@ -72315,47 +72347,53 @@ const TurnManual = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(si
     }
   }
 
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "wrapper"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "manual"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: cn("move", moves[1] !== null),
-    onClick: () => manualMove(numTurns, moves[2])
-  }, "w")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "manual"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: cn("move", moves[1] !== null),
-    onClick: () => manualMove(numTurns, moves[1])
-  }, "a"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: cn("move", moves[0] !== null),
-    onClick: () => manualMove(numTurns, moves[0])
-  }, "x"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: cn("move", moves[3] !== null),
-    onClick: () => manualMove(numTurns, moves[3])
-  }, "d")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "manual"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: cn("move", moves[1] !== null),
-    onClick: () => manualMove(numTurns, moves[4])
-  }, "s")));
+  return (// A React UI element for buttons that do the same thing as above keybindings.
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "wrapper"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "manual"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: cn("move", moves[1] !== null),
+      onClick: () => manualMove(numTurns, moves[2])
+    }, "w")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "manual"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: cn("move", moves[1] !== null),
+      onClick: () => manualMove(numTurns, moves[1])
+    }, "a"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: cn("move", moves[0] !== null),
+      onClick: () => manualMove(numTurns, moves[0])
+    }, "x"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: cn("move", moves[3] !== null),
+      onClick: () => manualMove(numTurns, moves[3])
+    }, "d")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "manual"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: cn("move", moves[1] !== null),
+      onClick: () => manualMove(numTurns, moves[4])
+    }, "s")))
+  );
 });
 const TurnSlider = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(simulationState, ({
   turn,
   parameters: {
     numTurns
   }
-}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+}) => // This subscribes to the global state and builds a panel for advancing/turning back the county display.
+react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
   className: "wrapper"
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
   className: "play-controls"
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
   className: cn("icon", turn !== 0),
-  onClick: () => setTurn(Math.max(0, turn - 1))
+  onClick: () => setTurn(Math.max(0, turn - 1)) // Set the season shown to previous, unless already at first
+
 }, "|\u25C0"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
   className: cn("icon", turn !== numTurns),
-  onClick: () => setTurn(Math.min(numTurns, turn + 1))
+  onClick: () => setTurn(Math.min(numTurns, turn + 1)) // Set the season shown to next, unless already at last
+
 }, "\u25B6|"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+  // Season slider
   type: "range",
   value: turn,
   min: "0",
@@ -72366,12 +72404,13 @@ const TurnSlider = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(si
   className: "play-controls"
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TurnsLabel, null))));
 const Controls = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(gospel, () => {
+  // This builds the overall controls panel React element.
   let controlsDivs = document.getElementsByClassName('controls');
 
   if (controlsDivs.length !== 0) {
     for (let eachDiv of controlsDivs) {
       eachDiv.addEventListener("transitionend", function () {
-        resizeControls();
+        resizeControls(); // Whenever its internals finish a transition, the control panel resizes to the correct height.
       }, false);
     }
   }
@@ -72385,22 +72424,28 @@ const Controls = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(gosp
 
 const ViewToggle = (target, label) => Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(viewState, ({
   show
-}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+}) => // Common constructor pattern for the display switches, subscribes to viewState to know what to show.
+react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
   className: ` view-button ${show === target ? "shown" : "hidden"}`,
   onClick: () => {
     if (viewState.show !== target) Object(zine__WEBPACK_IMPORTED_MODULE_4__["issue"])(viewState, {
       show: target
-    });
-    document.getElementById('root').scrollTop = 0;
+    }); // Update what is to be shown 
+
+    document.getElementById('root').scrollTop = 0; // Reset view to top of root element 
+
     resizeControls();
   }
 }, label));
 
-const DocToggle = ViewToggle("docs", "?");
-const CountyToggle = ViewToggle("county", "፨");
-const ChartToggle = ViewToggle("charts", "🗠");
+const DocToggle = ViewToggle("docs", "?"); // Markdown documentation
 
-const VizControls = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+const CountyToggle = ViewToggle("county", "፨"); // Graphical display of individual glens and sheep for one season at a time.
+
+const ChartToggle = ViewToggle("charts", "🗠"); // Charts of statistical profiles of county across seasons.
+
+const VizControls = () => // Complete display switch panel
+react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
   id: "displays-wrapper"
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DocToggle, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(CountyToggle, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ChartToggle, null));
 
@@ -72410,211 +72455,217 @@ const Doc = () => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("di
     __html: _README_md__WEBPACK_IMPORTED_MODULE_8___default.a
   },
   height: "auto"
-});
+}); // Documentation element created from README.md
+
 
 const CountyCharts = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(simulationState, state => {
+  // Statistical charts made using Victory libraries and data serialized in data.js, subscribes to global state changes.
   let {
     populations,
     aStats,
     fStats,
     flockMax
-  } = Object(_data__WEBPACK_IMPORTED_MODULE_7__["chartStats"])(state);
-  let domainX = [0, populations.length - 1];
+  } = Object(_data__WEBPACK_IMPORTED_MODULE_7__["chartStats"])(state); // See data.js
+
+  let domainX = [0, populations.length - 1]; // These are for formatting axes.
+
   let domainAY = [0, 1.1];
   let domainSY = [0, state.allSheep.length];
   let domainFY = [0, flockMax];
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "charts"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryChart"], {
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material,
-    width: 1000,
-    height: 500,
-    animate: {
-      duration: 500
-    },
-    containerComponent: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryContainer"], {
+  return (// See Victory documentation: https://formidable.com/open-source/victory/docs/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "charts"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryChart"], {
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material,
       width: 1000,
-      height: 600,
+      height: 500,
+      animate: {
+        duration: 500
+      },
+      containerComponent: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryContainer"], {
+        width: 1000,
+        height: 600,
+        style: {
+          parent: {
+            maxWidth: "80%"
+          }
+        },
+        className: "vchart"
+      })
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLegend"], {
+      x: 125,
+      y: 500,
+      title: "Average Abundance by Season",
+      centerTitle: true,
+      orientation: "horizontal",
+      gutter: 20,
       style: {
-        parent: {
-          maxWidth: "80%"
+        border: {
+          stroke: "black"
+        },
+        title: {
+          fontSize: 20
         }
       },
-      className: "vchart"
-    })
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLegend"], {
-    x: 125,
-    y: 500,
-    title: "Average Abundance by Season",
-    centerTitle: true,
-    orientation: "horizontal",
-    gutter: 20,
-    style: {
-      border: {
-        stroke: "black"
-      },
-      title: {
-        fontSize: 20
-      }
-    },
-    data: [{
-      name: "Mean",
-      symbol: {
-        fill: "green"
-      }
-    }, {
-      name: "Median",
-      symbol: {
-        fill: "brown"
-      }
-    }]
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
-    style: {
-      data: {
-        stroke: "brown",
-        strokeWidth: 3
-      }
-    },
-    data: aStats,
-    y: "median"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
-    style: {
-      data: {
-        stroke: "green",
-        strokeWidth: 3
-      }
-    },
-    data: aStats,
-    y: "mean"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
-    domain: domainX,
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
-    dependentAxis: true,
-    domain: domainAY,
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryChart"], {
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material,
-    width: 1000,
-    height: 500,
-    animate: {
-      duration: 500
-    },
-    containerComponent: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryContainer"], {
-      width: 1000,
-      height: 600,
+      data: [{
+        name: "Mean",
+        symbol: {
+          fill: "green"
+        }
+      }, {
+        name: "Median",
+        symbol: {
+          fill: "brown"
+        }
+      }]
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
       style: {
-        parent: {
-          maxWidth: "80%"
+        data: {
+          stroke: "brown",
+          strokeWidth: 3
         }
       },
-      className: "vchart"
-    })
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLegend"], {
-    x: 125,
-    y: 500,
-    title: "Average (Surviving) Flock Size by Season",
-    centerTitle: true,
-    orientation: "horizontal",
-    gutter: 20,
-    style: {
-      border: {
-        stroke: "black"
-      },
-      title: {
-        fontSize: 20
-      }
-    },
-    data: [{
-      name: "Mean",
-      symbol: {
-        fill: "grey"
-      }
-    }, {
-      name: "Median",
-      symbol: {
-        fill: "black"
-      }
-    }]
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
-    style: {
-      data: {
-        stroke: "black",
-        strokeWidth: 3
-      }
-    },
-    data: fStats,
-    y: "median"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
-    style: {
-      data: {
-        stroke: "grey",
-        strokeWidth: 3
-      }
-    },
-    data: fStats,
-    y: "mean"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
-    domain: domainX,
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
-    dependentAxis: true,
-    domain: domainFY,
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryChart"], {
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material,
-    width: 1000,
-    height: 500,
-    animate: {
-      duration: 500
-    },
-    containerComponent: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryContainer"], {
-      width: 1000,
-      height: 600,
+      data: aStats,
+      y: "median"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
       style: {
-        parent: {
-          maxWidth: "80%"
+        data: {
+          stroke: "green",
+          strokeWidth: 3
         }
       },
-      className: "vchart"
-    })
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLegend"], {
-    x: 125,
-    y: 500,
-    title: "Total Sheep Population by Season",
-    centerTitle: true,
-    orientation: "horizontal",
-    gutter: 20,
-    style: {
-      border: {
-        stroke: "black"
+      data: aStats,
+      y: "mean"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
+      domain: domainX,
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
+      dependentAxis: true,
+      domain: domainAY,
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
+    })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryChart"], {
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material,
+      width: 1000,
+      height: 500,
+      animate: {
+        duration: 500
       },
-      title: {
-        fontSize: 20
-      }
-    },
-    data: [{
-      name: "Population",
-      symbol: {
-        fill: "black"
-      }
-    }]
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
-    style: {
-      data: {
-        stroke: "black",
-        strokeWidth: 3
-      }
-    },
-    data: populations
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
-    domain: domainX,
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
-    dependentAxis: true,
-    domain: domainSY,
-    theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
-  })));
+      containerComponent: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryContainer"], {
+        width: 1000,
+        height: 600,
+        style: {
+          parent: {
+            maxWidth: "80%"
+          }
+        },
+        className: "vchart"
+      })
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLegend"], {
+      x: 125,
+      y: 500,
+      title: "Average (Surviving) Flock Size by Season",
+      centerTitle: true,
+      orientation: "horizontal",
+      gutter: 20,
+      style: {
+        border: {
+          stroke: "black"
+        },
+        title: {
+          fontSize: 20
+        }
+      },
+      data: [{
+        name: "Mean",
+        symbol: {
+          fill: "grey"
+        }
+      }, {
+        name: "Median",
+        symbol: {
+          fill: "black"
+        }
+      }]
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
+      style: {
+        data: {
+          stroke: "black",
+          strokeWidth: 3
+        }
+      },
+      data: fStats,
+      y: "median"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
+      style: {
+        data: {
+          stroke: "grey",
+          strokeWidth: 3
+        }
+      },
+      data: fStats,
+      y: "mean"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
+      domain: domainX,
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
+      dependentAxis: true,
+      domain: domainFY,
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
+    })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryChart"], {
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material,
+      width: 1000,
+      height: 500,
+      animate: {
+        duration: 500
+      },
+      containerComponent: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryContainer"], {
+        width: 1000,
+        height: 600,
+        style: {
+          parent: {
+            maxWidth: "80%"
+          }
+        },
+        className: "vchart"
+      })
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLegend"], {
+      x: 125,
+      y: 500,
+      title: "Total Sheep Population by Season",
+      centerTitle: true,
+      orientation: "horizontal",
+      gutter: 20,
+      style: {
+        border: {
+          stroke: "black"
+        },
+        title: {
+          fontSize: 20
+        }
+      },
+      data: [{
+        name: "Population",
+        symbol: {
+          fill: "black"
+        }
+      }]
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryLine"], {
+      style: {
+        data: {
+          stroke: "black",
+          strokeWidth: 3
+        }
+      },
+      data: populations
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
+      domain: domainX,
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(victory__WEBPACK_IMPORTED_MODULE_2__["VictoryAxis"], {
+      dependentAxis: true,
+      domain: domainSY,
+      theme: victory__WEBPACK_IMPORTED_MODULE_2__["VictoryTheme"].material
+    })))
+  );
 });
 const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(simulationState, ({
   turn,
@@ -72622,10 +72673,15 @@ const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(sim
   glens,
   flocks
 }) => {
-  let gridSpacing = 1000 / parameters.countySize;
-  let glenRadius = gridSpacing * 0.45;
-  let sheepRadius = glenRadius * 0.075;
-  let offset = gridSpacing / 2;
+  // This generates the single-season graphical county view.
+  let gridSpacing = 1000 / parameters.countySize; // Divide the space up based on number of glens
+
+  let glenRadius = gridSpacing * 0.45; // Glens don't quite fill their spaces 
+
+  let sheepRadius = glenRadius * 0.075; // Sheep are tiny compared to glens
+
+  let offset = gridSpacing / 2; // Vertices are the centers of glens, and need to be offset for edge glens to be fully in view
+
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "charts"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", {
@@ -72637,7 +72693,8 @@ const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(sim
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", null, glens.map(({
     position: [x, y],
     abundance
-  }, index) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("circle", {
+  }, index) => // Green circles for the glens
+  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("circle", {
     cx: x * gridSpacing + offset,
     cy: y * gridSpacing + offset,
     r: glenRadius,
@@ -72652,13 +72709,15 @@ const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(sim
   }, sheep.map(({
     hunger
   }, sheepIndex) => {
+    // White circles, scattered radially within the grove, for sheep.
     let currentHunger = hunger[turn];
     let r = Math.random();
     let angle = Math.random() * 2 * Math.PI;
     let cx = glen[turn].position[0] * gridSpacing + Math.cos(angle) * r * glenRadius * 0.9 + offset;
     let cy = glen[turn].position[1] * gridSpacing + Math.sin(angle) * r * glenRadius * 0.9 + offset;
     let alpha = currentHunger < 0 || currentHunger > parameters.sheepEndurance ? 0 : 1 - currentHunger / (parameters.sheepEndurance + 1);
-    let sheepFill = manual ? `rgba(0, 0, 0, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
+    let sheepFill = manual ? `rgba(0, 0, 0, ${alpha})` : `rgba(255, 255, 255, ${alpha})`; // Sheep are white (or black for manual), increasingly translucent when hungry
+
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("circle", {
       r: sheepRadius,
       style: {
@@ -72672,6 +72731,7 @@ const GraphView = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(sim
 const Viz = Object(react_zine__WEBPACK_IMPORTED_MODULE_3__["connect"])(viewState, ({
   show
 }) => {
+  // Subscribe to know what is to be shown
   let viz;
 
   switch (show) {
