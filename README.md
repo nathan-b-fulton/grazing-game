@@ -4,7 +4,7 @@ Welcome to _The Grazing Game_, a simple model of how mobile populations might sh
 
 ## How to use this application
 
-(_n.b.: If you are viewing this document on the GitHub source page, you may just want to go straight to http://grazing.games/ to play with the actual simulation application._)
+(_n.b.: If you are viewing this document on the GitHub source page, you may just want to go straight to http://arbiter.games/ to play with the actual simulation application._)
 
 1. Please view this application on a full-size screen and in a maximized (or at least fairly fully expanded, landscape oriented) window. It is not optimized for mobile devices, vertically oriented tablets, or the like at this time.
 1. Read the full explanation of The Grazing Game below to make sure you understand the parameters.
