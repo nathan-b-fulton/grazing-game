@@ -16,7 +16,7 @@ This is the main file for the Grazing Game, containing pretty much all the layou
 // State Containers & Constants
 
 const parameters = { // See README.md for descriptions of these.
-  numTurns: 25,
+  numTurns: 32,
   countySize: 8,
   glenGrowthRate: 1.5,
   numFlocks: 32,
